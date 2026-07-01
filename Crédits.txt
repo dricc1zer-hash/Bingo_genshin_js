@@ -1,0 +1,13 @@
+Trosk_1 : Programmation et Remplissage
+
+A noter :
+- Si on vous demande d'acheter qq chose et que le marchand n'en n'a plus , considerez comme validé
+- Quand on dit "Serveur" , ça peux etre une Serveuse (on ne précise pas le genre pour ne pas avoir des labels trop long) . Ce sera toujours vrai sauf si le contraire est indiqué
+- les PNJ comme "Little Kuang" par exemple sont considéré comme commençant par la lettre K
+- Quand on dit "Parler à un serveur" , cela signifie qu'il doit y avoir le mot "serveur" (ou "serveuse") dans le titre en dessous de son nom
+- Genshin étant un monde en mouvement , il se peux qu'une case soit impossible .Désolé si cela arrive !
+- Un "boss" , c'est un boss de materiaux (arbre cryo ...) ou un boss hebdo (stormterror...)
+- Un ennemi élite , c'est par exemple un chef bruto , un mage des abysses . Chez les fatui , c'est par exemple les mages electrolucioles ou les usuriers
+- Les events ou d'autres choses non prévues peuvent parfois faciliter une case . Eh bien , c'est OK : utilisez les !
+- On part du principe que vous etes à jour dans la quete principale et que tout les TPs sont débloqués
+- utiliser le guide l'aventurier peux beaucoup aider . Décidez à l'avance si vous l'autorisez ou pas

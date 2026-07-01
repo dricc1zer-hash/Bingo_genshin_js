@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bingo Genshin Impact</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <section id="main-screen" class="screen screen-active menu-screen" aria-labelledby="app-title">
+      <div class="brand-block">
+        <h1 id="app-title">Bingo Genshin Impact</h1>
+        <img class="title-image" src="Ayaka.png" alt="Illustration Genshin Impact">
+      </div>
+      <nav class="menu-actions" aria-label="Menu principal">
+        <button class="primary-action" data-screen="bingo-screen">Bingo</button>
+        <button data-screen="settings-screen">Paramètres</button>
+        <button data-screen="credits-screen">Crédits</button>
+      </nav>
+    </section>
+    <section id="bingo-screen" class="screen game-screen" aria-labelledby="bingo-title">
+      <header class="game-header"><h2 id="bingo-title">Bingo</h2><output id="timer" class="timer">Chronomètre : 00:00:00</output></header>
+      <div class="toolbar" aria-label="Contrôles de partie">
+        <button id="fill-grid">Commencer</button><button id="start-timer">Démarrer chrono</button><button id="stop-timer">Arrêter chrono</button>
+        <div class="player-colors" aria-label="Couleur du joueur actif">
+          <button class="color-button" data-color="green" aria-label="Joueur Vert"></button><button class="color-button" data-color="red" aria-label="Joueur Rouge"></button><button class="color-button" data-color="blue" aria-label="Joueur Bleu"></button><button class="color-button" data-color="yellow" aria-label="Joueur Jaune"></button>
+        </div>
+      </div>
+      <div id="bingo-grid" class="bingo-grid" aria-label="Grille de bingo"></div><button class="back-button" data-screen="main-screen">Menu principal</button>
+    </section>
+    <section id="settings-screen" class="screen settings-screen" aria-labelledby="settings-title">
+      <h2 id="settings-title">Paramètres</h2>
+      <form class="settings-form">
+        <label><span>Difficulté</span><select id="difficulty"><option>Normal</option><option>Facile</option></select></label>
+        <label><span>Longueur Min</span><select id="length-min"><option>1</option><option>2</option></select></label>
+        <label><span>Longueur Max</span><select id="length-max"><option>3</option><option>4</option><option selected>5</option></select></label>
+        <label><span>Temps limite en Min</span><input id="time-limit" type="number" min="1" step="1" value="30" inputmode="numeric"></label>
+        <label><span>Points pour ligne/Col/diag</span><input id="line-points" type="number" min="0" step="1" value="3" inputmode="numeric"></label>
+        <button id="reset-settings" type="button">Par défaut</button>
+      </form>
+      <p class="settings-note">La difficulté Facile ajoute la région. La longueur filtre les propositions disponibles. Le bonus s'ajoute pour chaque ligne, colonne ou diagonale complète d'une même couleur.</p>
+      <button class="back-button" data-screen="main-screen">Menu principal</button>
+    </section>
+    <section id="credits-screen" class="screen credits-screen" aria-labelledby="credits-title">
+      <h2 id="credits-title">Crédits</h2><article id="credits-content" class="credits-content"></article><button class="back-button" data-screen="main-screen">Menu principal</button>
+    </section>
+  </main>
+  <dialog id="message-dialog"><form method="dialog" class="dialog-card"><h3 id="dialog-title"></h3><div id="dialog-message"></div><button>OK</button></form></dialog>
+  <script src="app.js"></script>
+</body>
+</html>
