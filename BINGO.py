@@ -27,6 +27,11 @@ PLAYER_LABELS = {
 }
 DEFAULT_PLAYER_COLOR = "green"
 COLOR_ORDER = ("green", "red", "blue", "yellow")
+LANGUAGES = {
+    "Français/French": "Liste_FR.txt",
+    "English": "Liste_EN.txt",
+}
+DEFAULT_LANGUAGE = "Français/French"
 
 
 def get_app_dir() -> Path:
@@ -36,7 +41,6 @@ def get_app_dir() -> Path:
 
 
 APP_DIR = get_app_dir()
-LISTE_FILE = APP_DIR / "Liste_FR.txt"
 CREDITS_FILE = APP_DIR / "Crédits.txt"
 TITLE_IMAGE_MAX_SIZE = (280, 280)
 
@@ -55,9 +59,11 @@ def load_title_image(path: Path) -> ImageTk.PhotoImage:
     return ImageTk.PhotoImage(image)
 
 
-def load_liste() -> list[dict[str, str]]:
+def load_liste(language: str) -> list[dict[str, str]]:
+    liste_filename = LANGUAGES.get(language, LANGUAGES[DEFAULT_LANGUAGE])
+    liste_file = APP_DIR / liste_filename
     rows: list[dict[str, str]] = []
-    with LISTE_FILE.open(encoding="utf-8", newline="") as handle:
+    with liste_file.open(encoding="utf-8", newline="") as handle:
         reader = csv.reader(handle, delimiter="\t")
         for line in reader:
             if len(line) < 5:
@@ -81,6 +87,7 @@ class BingoApp(tk.Tk):
         self.geometry("1100x780")
         self.minsize(900, 650)
 
+        self.language = tk.StringVar(value=DEFAULT_LANGUAGE)
         self.difficulty = tk.StringVar(value="Normal")
         self.longueur_min = tk.StringVar(value="1")
         self.longueur_max = tk.StringVar(value="5")
@@ -440,9 +447,10 @@ class BingoApp(tk.Tk):
 
     def _fill_grid(self) -> None:
         try:
-            entries = load_liste()
+            entries = load_liste(self.language.get())
         except OSError as exc:
-            messagebox.showerror("Erreur", f"Impossible de lire Liste_FR.txt :\n{exc}")
+            liste_filename = LANGUAGES.get(self.language.get(), LANGUAGES[DEFAULT_LANGUAGE])
+            messagebox.showerror("Erreur", f"Impossible de lire {liste_filename} :\n{exc}")
             return
 
         entries = self._filter_entries_by_length(entries)
@@ -646,6 +654,7 @@ class BingoApp(tk.Tk):
         self._finalize_chrono()
 
     def _reset_settings_to_defaults(self) -> None:
+        self.language.set(DEFAULT_LANGUAGE)
         self.difficulty.set("Normal")
         self.longueur_min.set("1")
         self.longueur_max.set("5")
@@ -662,8 +671,19 @@ class BingoApp(tk.Tk):
         form = tk.Frame(frame)
         form.pack(pady=20)
 
-        tk.Label(form, text="Difficulté :", font=("Segoe UI", 12)).grid(
+        tk.Label(form, text="Langue :", font=("Segoe UI", 12)).grid(
             row=0, column=0, sticky=tk.W, padx=8, pady=12
+        )
+        ttk.Combobox(
+            form,
+            textvariable=self.language,
+            values=list(LANGUAGES.keys()),
+            state="readonly",
+            width=20,
+        ).grid(row=0, column=1, padx=8, pady=12)
+
+        tk.Label(form, text="Difficulté :", font=("Segoe UI", 12)).grid(
+            row=1, column=0, sticky=tk.W, padx=8, pady=12
         )
         combo = ttk.Combobox(
             form,
@@ -672,10 +692,10 @@ class BingoApp(tk.Tk):
             state="readonly",
             width=20,
         )
-        combo.grid(row=0, column=1, padx=8, pady=12)
+        combo.grid(row=1, column=1, padx=8, pady=12)
 
         tk.Label(form, text="Longueur Min :", font=("Segoe UI", 12)).grid(
-            row=1, column=0, sticky=tk.W, padx=8, pady=12
+            row=2, column=0, sticky=tk.W, padx=8, pady=12
         )
         ttk.Combobox(
             form,
@@ -683,10 +703,10 @@ class BingoApp(tk.Tk):
             values=["1", "2"],
             state="readonly",
             width=20,
-        ).grid(row=1, column=1, padx=8, pady=12)
+        ).grid(row=2, column=1, padx=8, pady=12)
 
         tk.Label(form, text="Longueur Max :", font=("Segoe UI", 12)).grid(
-            row=2, column=0, sticky=tk.W, padx=8, pady=12
+            row=3, column=0, sticky=tk.W, padx=8, pady=12
         )
         ttk.Combobox(
             form,
@@ -694,24 +714,24 @@ class BingoApp(tk.Tk):
             values=["3", "4", "5"],
             state="readonly",
             width=20,
-        ).grid(row=2, column=1, padx=8, pady=12)
+        ).grid(row=3, column=1, padx=8, pady=12)
 
         tk.Label(form, text="Temps limite en Min :", font=("Segoe UI", 12)).grid(
-            row=3, column=0, sticky=tk.W, padx=8, pady=12
+            row=4, column=0, sticky=tk.W, padx=8, pady=12
         )
         temps_entry = ttk.Entry(
             form, textvariable=self.temps_limite, width=22, justify=tk.CENTER
         )
-        temps_entry.grid(row=3, column=1, padx=8, pady=12)
+        temps_entry.grid(row=4, column=1, padx=8, pady=12)
         temps_entry.bind("<FocusOut>", self._on_temps_limite_focus_out)
 
         tk.Label(
             form, text="Nombre de points pour ligne/Col/diag :", font=("Segoe UI", 12)
-        ).grid(row=4, column=0, sticky=tk.W, padx=8, pady=12)
+        ).grid(row=5, column=0, sticky=tk.W, padx=8, pady=12)
         points_entry = ttk.Entry(
             form, textvariable=self.points_par_ligne, width=22, justify=tk.CENTER
         )
-        points_entry.grid(row=4, column=1, padx=8, pady=12)
+        points_entry.grid(row=5, column=1, padx=8, pady=12)
         points_entry.bind("<FocusOut>", self._on_points_par_ligne_focus_out)
 
         tk.Button(
@@ -720,9 +740,10 @@ class BingoApp(tk.Tk):
             command=self._reset_settings_to_defaults,
             padx=12,
             pady=6,
-        ).grid(row=5, column=0, columnspan=2, pady=(20, 8))
+        ).grid(row=6, column=0, columnspan=2, pady=(20, 8))
 
         hint = (
+            "Langue : choisir entre Français et English pour charger la liste appropriée.\n\n"
             "La difficulté Facile ajoutera la région.\n\n"
             "Longueur Min / Max : seules les lignes dont le champ "
             "« Longueur 1 à 5 » est compris entre ces valeurs seront utilisées.\n\n"
