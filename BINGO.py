@@ -135,11 +135,20 @@ class BingoApp(tk.Tk):
         self._select_color(DEFAULT_PLAYER_COLOR)
         self._update_chrono_display()
 
+    def _try_go_to_main(self) -> None:
+        if self.chrono_running:
+            messagebox.showwarning(
+                "Chronomètre actif",
+                "Le chronomètre est en cours. Vous devez d'abord l'arrêter avant de retourner au menu principal."
+            )
+            return
+        self.show_screen("main")
+
     def _add_back_button(self, parent: tk.Frame) -> None:
         back = tk.Button(
             parent,
             text="Menu principal",
-            command=lambda: self.show_screen("main"),
+            command=self._try_go_to_main,
             padx=12,
             pady=6,
         )
