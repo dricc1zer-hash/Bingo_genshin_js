@@ -36,7 +36,7 @@ def get_app_dir() -> Path:
 
 
 APP_DIR = get_app_dir()
-LISTE_FILE = APP_DIR / "Liste.txt"
+LISTE_FILE = APP_DIR / "Liste_FR.txt"
 CREDITS_FILE = APP_DIR / "Crédits.txt"
 TITLE_IMAGE_MAX_SIZE = (280, 280)
 
@@ -433,7 +433,7 @@ class BingoApp(tk.Tk):
         try:
             entries = load_liste()
         except OSError as exc:
-            messagebox.showerror("Erreur", f"Impossible de lire Liste.txt :\n{exc}")
+            messagebox.showerror("Erreur", f"Impossible de lire Liste_FR.txt :\n{exc}")
             return
 
         entries = self._filter_entries_by_length(entries)
