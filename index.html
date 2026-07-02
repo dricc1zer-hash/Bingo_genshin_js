@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="fr">
 <head>
   <meta charset="utf-8">
@@ -27,7 +27,12 @@
           <button class="color-button" data-color="green" aria-label="Joueur Vert"></button><button class="color-button" data-color="red" aria-label="Joueur Rouge"></button><button class="color-button" data-color="blue" aria-label="Joueur Bleu"></button><button class="color-button" data-color="yellow" aria-label="Joueur Jaune"></button>
         </div>
       </div>
-      <div id="bingo-grid" class="bingo-grid" aria-label="Grille de bingo"></div><button class="back-button" data-screen="main-screen">Menu principal</button>
+      <div id="bingo-grid" class="bingo-grid" aria-label="Grille de bingo"></div>
+      <div class="seed-controls">
+        <button id="import-seed">Importer Graine</button>
+        <button id="export-seed">Exporter Graine</button>
+      </div>
+      <button class="back-button" data-screen="main-screen">Menu principal</button>
     </section>
     <section id="settings-screen" class="screen settings-screen" aria-labelledby="settings-title">
       <h2 id="settings-title">Paramètres</h2>
@@ -48,6 +53,27 @@
     </section>
   </main>
   <dialog id="message-dialog"><form method="dialog" class="dialog-card"><h3 id="dialog-title"></h3><div id="dialog-message"></div><button>OK</button></form></dialog>
+  <dialog id="seed-dialog" class="seed-dialog">
+    <div class="seed-dialog-content">
+      <h3 id="seed-dialog-title">Graine</h3>
+      <div id="export-section" style="display: none;">
+        <p>Votre graine :</p>
+        <div id="seed-display" class="seed-display"></div>
+        <button id="copy-seed">Copier</button>
+      </div>
+      <div id="import-section">
+        <p>Entrez votre graine (50 caractères) :</p>
+        <input type="text" id="seed-input" maxlength="50" placeholder="Collez votre graine ici...">
+        <div class="seed-buttons">
+          <button id="paste-seed">Coller</button>
+        </div>
+      </div>
+      <div class="seed-dialog-actions">
+        <button id="cancel-seed">Retour</button>
+        <button id="confirm-seed" class="primary-action">Confirmer</button>
+      </div>
+    </div>
+  </dialog>
   <script src="app.js"></script>
 </body>
 </html>
