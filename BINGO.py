@@ -1,5 +1,5 @@
 """Bingo Genshin Impact — application Windows (Tkinter)."""
-# POUR INFO , UNIQUEMENT ! #
+# POUR INFO , UNIQUEMENT ! #3
 import csv
 import random
 import sys
