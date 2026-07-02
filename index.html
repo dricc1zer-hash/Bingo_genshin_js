@@ -59,18 +59,21 @@
       <div id="export-section" style="display: none;">
         <p>Votre graine :</p>
         <div id="seed-display" class="seed-display"></div>
-        <button id="copy-seed">Copier</button>
+        <div class="seed-dialog-actions">
+          <button id="copy-seed">Copier</button>
+          <button id="cancel-seed">Fermer</button>
+        </div>
       </div>
-      <div id="import-section">
+      <div id="import-section" style="display: none;">
         <p>Entrez votre graine (50 caractères) :</p>
         <input type="text" id="seed-input" maxlength="50" placeholder="Collez votre graine ici...">
         <div class="seed-buttons">
           <button id="paste-seed">Coller</button>
         </div>
-      </div>
-      <div class="seed-dialog-actions">
-        <button id="cancel-seed">Retour</button>
-        <button id="confirm-seed" class="primary-action">Confirmer</button>
+        <div class="seed-dialog-actions">
+          <button id="cancel-seed">Retour</button>
+          <button id="confirm-seed" class="primary-action">Confirmer</button>
+        </div>
       </div>
     </div>
   </dialog>
