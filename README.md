@@ -16,6 +16,10 @@ Le jeu est une application web statique. Pour un test local fiable, lancez un pe
 - Cases multi-couleurs.
 - Calcul des scores : cases validées + bonus par ligne, colonne ou diagonale complète.
 
+## Fonctionnalités ajoutées
+- Français/anglais
+- Gestion de graines
+
 ## Fichiers utiles
 
 - `index.html` : page du jeu.
