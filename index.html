@@ -5,6 +5,69 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Bingo Genshin Impact</title>
   <link rel="stylesheet" href="styles.css">
+  <style>
+    .seed-dialog {
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      padding: 0;
+      max-width: 500px;
+      width: 90%;
+    }
+    
+    .seed-dialog::backdrop {
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+    
+    .seed-dialog-content {
+      padding: 24px;
+    }
+    
+    .seed-dialog-content h3 {
+      margin-top: 0;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    
+    .seed-display {
+      background-color: #f5f5f5;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 12px;
+      font-family: monospace;
+      font-size: 14px;
+      word-break: break-all;
+      margin-bottom: 16px;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+    
+    .seed-dialog-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+    
+    .seed-buttons {
+      margin-bottom: 16px;
+    }
+    
+    #seed-input {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: monospace;
+      box-sizing: border-box;
+    }
+    
+    #seed-input:focus {
+      outline: none;
+      border-color: #3498db;
+    }
+  </style>
 </head>
 <body>
   <main class="app-shell">
