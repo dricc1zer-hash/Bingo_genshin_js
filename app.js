@@ -541,6 +541,8 @@ function decodeSeed(seed) {
 function exportSeed() {
   const seed = encodeSeed();
   els.seedDisplay.textContent = seed;
+  document.getElementById("export-section").style.display = "block";
+  document.getElementById("import-section").style.display = "none";
   els.seedDialog.showModal();
 }
 
@@ -551,6 +553,8 @@ async function importSeed() {
   }
   
   els.seedInput.value = "";
+  document.getElementById("export-section").style.display = "none";
+  document.getElementById("import-section").style.display = "block";
   els.seedDialog.showModal();
 }
 
