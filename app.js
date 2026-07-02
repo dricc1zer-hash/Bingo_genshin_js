@@ -482,7 +482,7 @@ function encodeSeed() {
       let index = entryIndex;
       let encoded = "";
       for (let i = 0; i < 2; i++) {
-        encoded = SEED_ALPHABET[index % 64] + encoded;
+        encoded = encoded + SEED_ALPHABET[index % 64];
         index = Math.floor(index / 64);
       }
       seed += encoded;
