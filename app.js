@@ -10,6 +10,9 @@ const LANGUAGES = {
 };
 const DEFAULT_LANGUAGE = "FR";
 
+// Custom base64 alphabet for seed encoding (64 characters)
+const SEED_ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$&";
+
 const state = {
   entries: [],
   activeColor: DEFAULT_PLAYER_COLOR,
@@ -41,6 +44,15 @@ const els = {
   dialog: document.querySelector("#message-dialog"),
   dialogTitle: document.querySelector("#dialog-title"),
   dialogMessage: document.querySelector("#dialog-message"),
+  importSeedBtn: document.querySelector("#import-seed"),
+  exportSeedBtn: document.querySelector("#export-seed"),
+  seedInput: document.querySelector("#seed-input"),
+  seedDialog: document.querySelector("#seed-dialog"),
+  seedDisplay: document.querySelector("#seed-display"),
+  confirmSeedBtn: document.querySelector("#confirm-seed"),
+  cancelSeedBtn: document.querySelector("#cancel-seed"),
+  pasteSeedBtn: document.querySelector("#paste-seed"),
+  copySeedBtn: document.querySelector("#copy-seed"),
 };
 
 function makeMatrix(value) {
@@ -84,6 +96,7 @@ async function bootstrap() {
   buildEmptyGrid();
   updateColorButtons();
   updateTimerDisplay();
+  updateSeedButtons();
 }
 
 function showScreen(screenId) {
@@ -104,6 +117,7 @@ function resetBingoScreen() {
   buildEmptyGrid();
   updateColorButtons();
   updateTimerDisplay();
+  updateSeedButtons();
 }
 
 function buildEmptyGrid() {
@@ -128,6 +142,10 @@ function updateColorButtons() {
   els.colorButtons.forEach(button => {
     button.classList.toggle("active", button.dataset.color === state.activeColor);
   });
+}
+
+function updateSeedButtons() {
+  els.importSeedBtn.disabled = state.timerRunning;
 }
 
 function propositionColumn() {
@@ -294,6 +312,7 @@ function startTimer() {
   state.timerRunning = true;
   state.timerStart = performance.now();
   tickTimer();
+  updateSeedButtons();
 }
 
 function stopTimer() {
@@ -315,6 +334,7 @@ function finalizeTimer({ capAtLimit = false } = {}) {
   clearTimerInterval();
   updateTimerDisplay();
   showResultPopup();
+  updateSeedButtons();
 }
 
 function clearTimerInterval() {
@@ -440,6 +460,144 @@ async function loadLanguage() {
   }
 }
 
+// Seed functions
+function encodeSeed() {
+  let seed = "";
+  for (let row = 0; row < GRID_SIZE; row++) {
+    for (let col = 0; col < GRID_SIZE; col++) {
+      const text = state.gridTexts[row][col];
+      if (!text) {
+        seed += "  "; // Empty cell
+        continue;
+      }
+      
+      // Find the index of this text in entries
+      const entryIndex = state.entries.findIndex(e => e.proposition === text || e.proposition_detaillee === text);
+      if (entryIndex === -1) {
+        seed += "  ";
+        continue;
+      }
+      
+      // Encode index in base64 (custom alphabet)
+      let index = entryIndex;
+      let encoded = "";
+      for (let i = 0; i < 2; i++) {
+        encoded = SEED_ALPHABET[index % 64] + encoded;
+        index = Math.floor(index / 64);
+      }
+      seed += encoded;
+    }
+  }
+  return seed;
+}
+
+function decodeSeed(seed) {
+  if (seed.length !== 50) {
+    showMessage("Erreur", "La graine doit contenir exactement 50 caractères.");
+    return false;
+  }
+
+  // Reset grid colors to white
+  state.gridColors = makeMatrix(null).map(row => row.map(() => new Set()));
+  
+  let entryIndex = 0;
+  for (let row = 0; row < GRID_SIZE; row++) {
+    for (let col = 0; col < GRID_SIZE; col++) {
+      const char1 = seed[entryIndex];
+      const char2 = seed[entryIndex + 1];
+      entryIndex += 2;
+
+      if (char1 === " " || char2 === " ") {
+        state.gridTexts[row][col] = "";
+        drawCell(row, col);
+        continue;
+      }
+
+      // Decode from base64 (custom alphabet)
+      const idx1 = SEED_ALPHABET.indexOf(char1);
+      const idx2 = SEED_ALPHABET.indexOf(char2);
+      
+      if (idx1 === -1 || idx2 === -1) {
+        showMessage("Erreur", "Caractère invalide dans la graine : " + (idx1 === -1 ? char1 : char2));
+        return false;
+      }
+
+      const index = idx2 * 64 + idx1;
+      
+      if (index < 0 || index >= state.entries.length) {
+        showMessage("Erreur", "Index invalide dans la graine : " + index);
+        return false;
+      }
+
+      const entry = state.entries[index];
+      const column = propositionColumn();
+      state.gridTexts[row][col] = entry[column];
+      drawCell(row, col);
+    }
+  }
+  return true;
+}
+
+function exportSeed() {
+  const seed = encodeSeed();
+  els.seedDisplay.textContent = seed;
+  els.seedDialog.showModal();
+}
+
+async function importSeed() {
+  if (state.timerRunning) {
+    showMessage("Erreur", "Impossible d'importer une graine pendant que le chronomètre est en cours.");
+    return;
+  }
+  
+  els.seedInput.value = "";
+  els.seedDialog.showModal();
+}
+
+async function confirmImport() {
+  const seed = els.seedInput.value.trim();
+  
+  if (!seed) {
+    showMessage("Erreur", "Veuillez saisir une graine.");
+    return;
+  }
+
+  if (seed.length !== 50) {
+    showMessage("Erreur", "La graine doit contenir exactement 50 caractères.");
+    return;
+  }
+
+  const success = decodeSeed(seed);
+  if (success) {
+    els.seedDialog.close();
+    els.seedInput.value = "";
+  }
+}
+
+function cancelImport() {
+  els.seedDialog.close();
+  els.seedInput.value = "";
+}
+
+async function pasteFromClipboard() {
+  try {
+    const text = await navigator.clipboard.readText();
+    els.seedInput.value = text;
+  } catch (err) {
+    showMessage("Erreur", "Impossible d'accéder au presse-papier.");
+  }
+}
+
+async function copyToClipboard() {
+  try {
+    const seed = els.seedDisplay.textContent;
+    await navigator.clipboard.writeText(seed);
+    showMessage("Succès", "Graine copiée dans le presse-papier !");
+  } catch (err) {
+    showMessage("Erreur", "Impossible de copier dans le presse-papier.");
+  }
+}
+
 document.addEventListener("click", event => {
   const screenButton = event.target.closest("[data-screen]");
   if (screenButton) showScreen(screenButton.dataset.screen);
@@ -459,5 +617,11 @@ els.resetSettings.addEventListener("click", resetSettingsToDefaults);
 els.language.addEventListener("change", loadLanguage);
 els.timeLimit.addEventListener("blur", () => validateTimeLimit({ silent: true }));
 els.linePoints.addEventListener("blur", () => validateLinePoints({ silent: true }));
+els.importSeedBtn.addEventListener("click", importSeed);
+els.exportSeedBtn.addEventListener("click", exportSeed);
+els.confirmSeedBtn.addEventListener("click", confirmImport);
+els.cancelSeedBtn.addEventListener("click", cancelImport);
+els.pasteSeedBtn.addEventListener("click", pasteFromClipboard);
+els.copySeedBtn.addEventListener("click", copyToClipboard);
 
 bootstrap();
