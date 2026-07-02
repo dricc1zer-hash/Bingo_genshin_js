@@ -5,10 +5,10 @@ const PLAYER_LABELS = { green: "Vert", red: "Rouge", blue: "Bleu", yellow: "Jaun
 const COLOR_ORDER = ["green", "red", "blue", "yellow"];
 const DEFAULT_PLAYER_COLOR = "green";
 const LANGUAGES = {
-  "FranÃ§ais/French": "Liste_FR.txt",
-  "English": "Liste_EN.txt",
+  "FR": "Liste_FR.txt",
+  "EN": "Liste_EN.txt",
 };
-const DEFAULT_LANGUAGE = "FranÃ§ais/French";
+const DEFAULT_LANGUAGE = "FR";
 
 const state = {
   entries: [],
@@ -430,7 +430,8 @@ function resetSettingsToDefaults() {
 
 async function loadLanguage() {
   try {
-    const listFileName = LANGUAGES[els.language.value];
+    const selectedLang = els.language.value;
+    const listFileName = LANGUAGES[selectedLang];
     const content = await loadTextFile(listFileName);
     state.entries = parseListFile(content);
   } catch (error) {
