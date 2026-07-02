@@ -5,10 +5,10 @@ const PLAYER_LABELS = { green: "Vert", red: "Rouge", blue: "Bleu", yellow: "Jaun
 const COLOR_ORDER = ["green", "red", "blue", "yellow"];
 const DEFAULT_PLAYER_COLOR = "green";
 const LANGUAGES = {
-  "Français/French": "Liste_FR.txt",
+  "FranÃ§ais/French": "Liste_FR.txt",
   "English": "Liste_EN.txt",
 };
-const DEFAULT_LANGUAGE = "Français/French";
+const DEFAULT_LANGUAGE = "FranÃ§ais/French";
 
 const state = {
   entries: [],
@@ -59,7 +59,7 @@ function parseListFile(content) {
   return content
     .split(/\r?\n/)
     .map(line => line.split("\t"))
-    .filter(parts => parts.length > 5)
+    .filter(parts => parts.length >= 5)
     .map(parts => ({
       type: parts[0].trim(),
       proposition: parts[1].trim(),
@@ -74,12 +74,12 @@ async function bootstrap() {
     const listFileName = LANGUAGES[DEFAULT_LANGUAGE];
     const data = await Promise.all([
       loadTextFile(listFileName),
-      loadTextFile("Crédits.txt").catch(() => ""),
+      loadTextFile("CrÃ©dits.txt").catch(() => ""),
     ]);
     state.entries = parseListFile(data[0]);
     els.credits.textContent = data[1];
   } catch (error) {
-    showMessage("Erreur", "Impossible de charger les données du jeu.\n" + error.message);
+    showMessage("Erreur", "Impossible de charger les donnÃ©es du jeu.\n" + error.message);
   }
   buildEmptyGrid();
   updateColorButtons();
@@ -157,9 +157,9 @@ function fillGrid() {
   if (entries.length < CELLS_COUNT) {
     showMessage(
       "Erreur",
-      "Pas assez de propositions pour les critères choisis (longueur " +
+      "Pas assez de propositions pour les critÃ¨res choisis (longueur " +
         els.lengthMin.value +
-        " à " +
+        " Ã  " +
         els.lengthMax.value +
         ").\nIl en faut au moins " +
         CELLS_COUNT +
@@ -237,7 +237,7 @@ function colorBackground(colors) {
 
 function toggleCell(row, col) {
   if (!state.timerRunning) {
-    showMessage("Chronomètre", "Le chronomètre doit être démarré");
+    showMessage("ChronomÃ¨tre", "Le chronomÃ¨tre doit Ãªtre dÃ©marrÃ©");
     return;
   }
   if (!state.gridTexts[row][col]) return;
@@ -266,7 +266,7 @@ function validateTimeLimit({ silent = false } = {}) {
   if (!value || !Number.isInteger(minutes) || minutes <= 0) {
     els.timeLimit.value = "30";
     if (!silent)
-      showMessage("Paramètres", "Le temps limite doit être un nombre entier supérieur à 0.");
+      showMessage("ParamÃ¨tres", "Le temps limite doit Ãªtre un nombre entier supÃ©rieur Ã  0.");
     return false;
   }
   return true;
@@ -277,7 +277,7 @@ function validateLinePoints({ silent = false } = {}) {
   const points = Number.parseInt(value, 10);
   if (!value || !Number.isInteger(points)) {
     els.linePoints.value = "3";
-    if (!silent) showMessage("Paramètres", "Le nombre de points doit être un nombre entier.");
+    if (!silent) showMessage("ParamÃ¨tres", "Le nombre de points doit Ãªtre un nombre entier.");
     return false;
   }
   return true;
@@ -298,7 +298,7 @@ function startTimer() {
 
 function stopTimer() {
   if (!state.timerRunning) {
-    showMessage("Chronomètre", "Le chronomètre n'est pas démarré.");
+    showMessage("ChronomÃ¨tre", "Le chronomÃ¨tre n'est pas dÃ©marrÃ©.");
     return;
   }
   finalizeTimer();
@@ -334,7 +334,7 @@ function tickTimer() {
 }
 
 function updateTimerDisplay() {
-  els.timer.textContent = "Chronomètre : " + formatTime(elapsedSeconds());
+  els.timer.textContent = "ChronomÃ¨tre : " + formatTime(elapsedSeconds());
 }
 
 function formatTime(seconds) {
@@ -404,12 +404,12 @@ function showResultPopup() {
         cells +
         " cases + " +
         completeLines +
-        " ligne(s)/col/diag × " +
+        " ligne(s)/col/diag Ã— " +
         bonusPerLine +
         ")"
       );
     });
-  showMessage("Résultat", "Temps : " + formatTime(state.timerElapsed) + "\n\n" + lines.join("\n\n"));
+  showMessage("RÃ©sultat", "Temps : " + formatTime(state.timerElapsed) + "\n\n" + lines.join("\n\n"));
 }
 
 function showMessage(title, message) {
@@ -434,7 +434,7 @@ async function loadLanguage() {
     const content = await loadTextFile(listFileName);
     state.entries = parseListFile(content);
   } catch (error) {
-    showMessage("Erreur", "Impossible de charger la langue sélectionnée.\n" + error.message);
+    showMessage("Erreur", "Impossible de charger la langue sÃ©lectionnÃ©e.\n" + error.message);
     els.language.value = DEFAULT_LANGUAGE;
   }
 }
