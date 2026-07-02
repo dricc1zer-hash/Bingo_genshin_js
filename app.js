@@ -546,6 +546,10 @@ function exportSeed() {
   els.seedDialog.showModal();
 }
 
+function closeSeedDialog() {
+  els.seedDialog.close();
+}
+
 async function importSeed() {
   if (state.timerRunning) {
     showMessage("Erreur", "Impossible d'importer une graine pendant que le chronomètre est en cours.");
@@ -621,11 +625,12 @@ els.resetSettings.addEventListener("click", resetSettingsToDefaults);
 els.language.addEventListener("change", loadLanguage);
 els.timeLimit.addEventListener("blur", () => validateTimeLimit({ silent: true }));
 els.linePoints.addEventListener("blur", () => validateLinePoints({ silent: true }));
-els.importSeedBtn.addEventListener("click", importSeed);
-els.exportSeedBtn.addEventListener("click", exportSeed);
-els.confirmSeedBtn.addEventListener("click", confirmImport);
-els.cancelSeedBtn.addEventListener("click", cancelImport);
-els.pasteSeedBtn.addEventListener("click", pasteFromClipboard);
-els.copySeedBtn.addEventListener("click", copyToClipboard);
+  els.importSeedBtn.addEventListener("click", importSeed);
+  els.exportSeedBtn.addEventListener("click", exportSeed);
+  els.confirmSeedBtn.addEventListener("click", confirmImport);
+  els.cancelSeedBtn.addEventListener("click", cancelImport);
+  els.pasteSeedBtn.addEventListener("click", pasteFromClipboard);
+  els.copySeedBtn.addEventListener("click", copyToClipboard);
+  document.getElementById("close-seed").addEventListener("click", closeSeedDialog);
 
 bootstrap();
