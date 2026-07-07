@@ -4,6 +4,12 @@ const PLAYER_COLORS = { green: "#2ecc71", red: "#e74c3c", blue: "#3498db", yello
 const PLAYER_LABELS = { green: "Vert", red: "Rouge", blue: "Bleu", yellow: "Jaune" };
 const COLOR_ORDER = ["green", "red", "blue", "yellow"];
 const DEFAULT_PLAYER_COLOR = "green";
+const GRID_SIZES = {
+  "Normal": 1,
+  "Réduit": 0.75,
+  "Moitié": 0.5
+};
+const DEFAULT_GRID_SIZE = "Normal";
 const LANGUAGES = {
   "FR": "Liste_FR.txt",
   "EN": "Liste_EN.txt",
@@ -17,6 +23,7 @@ const state = {
   entries: [],
   activeColor: DEFAULT_PLAYER_COLOR,
   language: DEFAULT_LANGUAGE,
+  gridSize: DEFAULT_GRID_SIZE,
   gridTexts: makeMatrix(""),
   gridColors: makeMatrix(null).map(row => row.map(() => new Set())),
   timerRunning: false,
@@ -467,6 +474,19 @@ function resetSettingsToDefaults() {
   els.lengthMax.value = "5";
   els.timeLimit.value = "30";
   els.linePoints.value = "3";
+  els.gridSize.value = DEFAULT_GRID_SIZE;
+  applyGridSize();
+}
+
+function applyGridSize() {
+  const size = GRID_SIZES[els.gridSize.value] || 1;
+  state.gridSize = els.gridSize.value;
+  const cells = document.querySelectorAll(".cell");
+  cells.forEach(cell => {
+    cell.style.fontSize = size < 1 ? "0.85em" : "1em";
+  });
+  els.grid.style.transform = `scale(${size})`;
+  els.grid.style.transformOrigin = "top center";
 }
 
 async function loadLanguage() {
@@ -644,6 +664,7 @@ els.startTimer.addEventListener("click", startTimer);
 els.stopTimer.addEventListener("click", stopTimer);
 els.resetSettings.addEventListener("click", resetSettingsToDefaults);
 els.language.addEventListener("change", loadLanguage);
+els.gridSize.addEventListener("change", applyGridSize);
 els.timeLimit.addEventListener("blur", () => validateTimeLimit({ silent: true }));
 els.linePoints.addEventListener("blur", () => validateLinePoints({ silent: true }));
 els.importSeedBtn.addEventListener("click", importSeed);
