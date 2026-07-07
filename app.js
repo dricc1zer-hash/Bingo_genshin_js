@@ -233,7 +233,7 @@ function drawCell(row, col) {
     const safeCount = Number.isInteger(len) ? Math.max(0, len) : 0;
     starsEl.style.display = "block";
     starsEl.innerHTML = Array.from({ length: safeCount })
-      .map(() => '<img src="Star.png" class="star-icon" alt="★" style="width:50%; height:50%;" />')
+      .map(() => '<span class="star-text" aria-hidden="true">★</span>')
       .join("");
   } else {
     starsEl.style.display = "none";
