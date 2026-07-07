@@ -410,16 +410,36 @@ function countCompleteLinesForColor(color) {
 
 function showResultPopup() {
   const bonusPerLine = linePoints();
-  const lines = Object.entries(PLAYER_LABELS)
+  const results = Object.entries(PLAYER_LABELS)
     .map(([color, label]) => {
       const cells = countCellsForColor(color);
       const completeLines = countCompleteLinesForColor(color);
       const bonus = completeLines * bonusPerLine;
+      const total = cells + bonus;
+      return {
+        color,
+        label,
+        cells,
+        completeLines,
+        bonus,
+        total
+      };
+    });
+
+  // Find the winner(s)
+  const maxScore = Math.max(...results.map(r => r.total));
+  const winners = results.filter(r => r.total === maxScore);
+  const winnerText = winners.length === 1 
+    ? `Gagnant : ${winners[0].label} !` 
+    : `Égalité entre : ${winners.map(w => w.label).join(" et ")} !`;
+
+  const lines = results
+    .map(({ label, cells, completeLines, bonus, total }) => {
       return (
         "Joueur " +
         label +
         " : " +
-        (cells + bonus) +
+        total +
         " points\n  (" +
         cells +
         " cases + " +
@@ -429,7 +449,8 @@ function showResultPopup() {
         ")"
       );
     });
-  showMessage("Résultat", "Temps : " + formatTime(state.timerElapsed) + "\n\n" + lines.join("\n\n"));
+  
+  showMessage(winnerText, "Temps : " + formatTime(state.timerElapsed) + "\n\n" + lines.join("\n\n"));
 }
 
 function showMessage(title, message) {
@@ -625,12 +646,12 @@ els.resetSettings.addEventListener("click", resetSettingsToDefaults);
 els.language.addEventListener("change", loadLanguage);
 els.timeLimit.addEventListener("blur", () => validateTimeLimit({ silent: true }));
 els.linePoints.addEventListener("blur", () => validateLinePoints({ silent: true }));
-  els.importSeedBtn.addEventListener("click", importSeed);
-  els.exportSeedBtn.addEventListener("click", exportSeed);
-  els.confirmSeedBtn.addEventListener("click", confirmImport);
-  els.cancelSeedBtn.addEventListener("click", cancelImport);
-  els.pasteSeedBtn.addEventListener("click", pasteFromClipboard);
-  els.copySeedBtn.addEventListener("click", copyToClipboard);
-  document.getElementById("close-seed").addEventListener("click", closeSeedDialog);
+els.importSeedBtn.addEventListener("click", importSeed);
+els.exportSeedBtn.addEventListener("click", exportSeed);
+els.confirmSeedBtn.addEventListener("click", confirmImport);
+els.cancelSeedBtn.addEventListener("click", cancelImport);
+els.pasteSeedBtn.addEventListener("click", pasteFromClipboard);
+els.copySeedBtn.addEventListener("click", copyToClipboard);
+document.getElementById("close-seed").addEventListener("click", closeSeedDialog);
 
 bootstrap();
