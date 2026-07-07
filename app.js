@@ -17,6 +17,7 @@ const state = {
   activeColor: DEFAULT_PLAYER_COLOR,
   language: DEFAULT_LANGUAGE,
   gridTexts: [],
+  gridLengths: [],
   gridColors: [],
   timerRunning: false,
   timerStart: null,
@@ -36,6 +37,7 @@ const els = {
   lengthMax: document.querySelector("#length-max"),
   timeLimit: document.querySelector("#time-limit"),
   linePoints: document.querySelector("#line-points"),
+  showLength: document.querySelector("#show-length"),
   resetSettings: document.querySelector("#reset-settings"),
   language: document.querySelector("#language"),
   colorButtons: [...document.querySelectorAll(".color-button")],
@@ -123,6 +125,7 @@ function resetBingoScreen() {
 
 function buildEmptyGrid() {
   state.gridTexts = makeMatrix("");
+  state.gridLengths = makeMatrix(0);
   state.gridColors = makeMatrix(null).map(row => row.map(() => new Set()));
   els.grid.innerHTML = "";
   for (let row = 0; row < GRID_SIZE; row++) {
@@ -133,6 +136,15 @@ function buildEmptyGrid() {
       cell.dataset.row = String(row);
       cell.dataset.col = String(col);
       cell.setAttribute("aria-label", "Case vide");
+
+      const textEl = document.createElement("div");
+      textEl.className = "cell-text";
+      cell.append(textEl);
+
+      const starsEl = document.createElement("div");
+      starsEl.className = "cell-stars";
+      cell.append(starsEl);
+
       cell.addEventListener("click", () => toggleCell(row, col));
       els.grid.append(cell);
     }
@@ -194,7 +206,12 @@ function fillGrid() {
   selected.forEach((entry, index) => {
     const row = Math.floor(index / GRID_SIZE);
     const col = index % GRID_SIZE;
-    state.gridTexts[row][col] = entry[column];
+    const text = entry[column];
+    state.gridTexts[row][col] = text;
+
+    const lengthValue = Number.parseInt(entry.longueur, 10);
+    state.gridLengths[row][col] = Number.isInteger(lengthValue) ? lengthValue : 0;
+
     drawCell(row, col);
   });
 }
@@ -203,7 +220,26 @@ function drawCell(row, col) {
   const cell = cellElement(row, col);
   const text = state.gridTexts[row][col];
   const colors = orderedCellColors(state.gridColors[row][col]);
-  cell.textContent = text;
+
+  const textEl = cell.querySelector(".cell-text");
+  const starsEl = cell.querySelector(".cell-stars");
+
+  textEl.textContent = text;
+
+  const show = els.showLength && els.showLength.value === "Oui";
+  const len = state.gridLengths[row][col];
+
+  if (show && text) {
+    const safeCount = Number.isInteger(len) ? Math.max(0, len) : 0;
+    starsEl.style.display = "block";
+    starsEl.innerHTML = Array.from({ length: safeCount })
+      .map(() => '<img src="star.png" class="star-icon" alt="★" />')
+      .join("");
+  } else {
+    starsEl.style.display = "none";
+    starsEl.innerHTML = "";
+  }
+
   cell.classList.toggle("empty", !text);
   cell.classList.toggle("filled", Boolean(text));
   cell.style.background = colorBackground(colors);
@@ -467,7 +503,15 @@ function resetSettingsToDefaults() {
   els.lengthMax.value = "5";
   els.timeLimit.value = "30";
   els.linePoints.value = "3";
+  if (els.showLength) els.showLength.value = "Non";
   loadLanguage();
+
+  // Refresh current grid view (if any)
+  for (let row = 0; row < GRID_SIZE; row++) {
+    for (let col = 0; col < GRID_SIZE; col++) {
+      if (state.gridTexts[row] && state.gridTexts[row][col]) drawCell(row, col);
+    }
+  }
 }
 
 async function loadLanguage() {
@@ -628,6 +672,13 @@ els.resetSettings.addEventListener("click", resetSettingsToDefaults);
 els.language.addEventListener("change", loadLanguage);
 els.timeLimit.addEventListener("blur", () => validateTimeLimit({ silent: true }));
 els.linePoints.addEventListener("blur", () => validateLinePoints({ silent: true }));
+if (els.showLength) els.showLength.addEventListener("change", () => {
+  for (let row = 0; row < GRID_SIZE; row++) {
+    for (let col = 0; col < GRID_SIZE; col++) {
+      if (state.gridTexts[row] && state.gridTexts[row][col]) drawCell(row, col);
+    }
+  }
+});
 els.importSeedBtn.addEventListener("click", importSeed);
 els.exportSeedBtn.addEventListener("click", exportSeed);
 els.confirmSeedBtn.addEventListener("click", confirmImport);
