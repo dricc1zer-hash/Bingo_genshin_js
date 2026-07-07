@@ -100,10 +100,12 @@ async function bootstrap() {
   } catch (error) {
     showMessage("Erreur", "Impossible de charger les données du jeu.\n" + error.message);
   }
+  state.language = els.language.value;
   buildEmptyGrid();
   updateColorButtons();
   updateTimerDisplay();
   updateSeedButtons();
+  applyGridSize();
 }
 
 function showScreen(screenId) {
@@ -482,11 +484,10 @@ function applyGridSize() {
   const size = GRID_SIZES[els.gridSize.value] || 1;
   state.gridSize = els.gridSize.value;
   const cells = document.querySelectorAll(".cell");
+  const fontSize = size < 1 ? (size < 0.8 ? "0.7em" : "0.85em") : "1em";
   cells.forEach(cell => {
-    cell.style.fontSize = size < 1 ? "0.85em" : "1em";
+    cell.style.fontSize = fontSize;
   });
-  els.grid.style.transform = `scale(${size})`;
-  els.grid.style.transformOrigin = "top center";
 }
 
 async function loadLanguage() {
