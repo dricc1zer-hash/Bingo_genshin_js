@@ -24,8 +24,8 @@ const state = {
   activeColor: DEFAULT_PLAYER_COLOR,
   language: DEFAULT_LANGUAGE,
   gridSize: DEFAULT_GRID_SIZE,
-  gridTexts: makeMatrix(""),
-  gridColors: makeMatrix(null).map(row => row.map(() => new Set())),
+  gridTexts: [],
+  gridColors: [],
   timerRunning: false,
   timerStart: null,
   timerElapsed: 0,
@@ -91,16 +91,19 @@ function parseListFile(content) {
 async function bootstrap() {
   try {
     const listFileName = LANGUAGES[DEFAULT_LANGUAGE];
+    console.log("Chargement du fichier:", listFileName);
     const data = await Promise.all([
       loadTextFile(listFileName),
       loadTextFile("Crédits.txt").catch(() => ""),
     ]);
     state.entries = parseListFile(data[0]);
     els.credits.textContent = data[1];
+    console.log("Nombre d'entrées chargées:", state.entries.length);
   } catch (error) {
     showMessage("Erreur", "Impossible de charger les données du jeu.\n" + error.message);
+    console.error("Erreur de chargement:", error);
   }
-  state.language = els.language.value;
+  state.language = DEFAULT_LANGUAGE;
   buildEmptyGrid();
   updateColorButtons();
   updateTimerDisplay();
