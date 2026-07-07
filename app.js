@@ -90,7 +90,9 @@ function parseListFile(content) {
 
 async function bootstrap() {
   try {
-    const listFileName = LANGUAGES[DEFAULT_LANGUAGE];
+    // Use the value from the HTML select element
+    const selectedLang = els.language.value || DEFAULT_LANGUAGE;
+    const listFileName = LANGUAGES[selectedLang];
     console.log("Chargement du fichier:", listFileName);
     const data = await Promise.all([
       loadTextFile(listFileName),
@@ -98,12 +100,22 @@ async function bootstrap() {
     ]);
     state.entries = parseListFile(data[0]);
     els.credits.textContent = data[1];
+    state.language = selectedLang;
     console.log("Nombre d'entrées chargées:", state.entries.length);
   } catch (error) {
     showMessage("Erreur", "Impossible de charger les données du jeu.\n" + error.message);
     console.error("Erreur de chargement:", error);
+    // Try to load default language as fallback
+    try {
+      const listFileName = LANGUAGES[DEFAULT_LANGUAGE];
+      const content = await loadTextFile(listFileName);
+      state.entries = parseListFile(content);
+      state.language = DEFAULT_LANGUAGE;
+      els.language.value = DEFAULT_LANGUAGE;
+    } catch (fallbackError) {
+      console.error("Erreur de chargement du fallback:", fallbackError);
+    }
   }
-  state.language = DEFAULT_LANGUAGE;
   buildEmptyGrid();
   updateColorButtons();
   updateTimerDisplay();
@@ -486,11 +498,15 @@ function resetSettingsToDefaults() {
 function applyGridSize() {
   const size = GRID_SIZES[els.gridSize.value] || 1;
   state.gridSize = els.gridSize.value;
-  const cells = document.querySelectorAll(".cell");
-  const fontSize = size < 1 ? (size < 0.8 ? "0.7em" : "0.85em") : "1em";
-  cells.forEach(cell => {
-    cell.style.fontSize = fontSize;
-  });
+  
+  // Apply size to grid container
+  if (size < 1) {
+    els.grid.style.transform = `scale(${size})`;
+    els.grid.style.transformOrigin = "top center";
+    els.grid.style.transition = "transform 0.3s ease";
+  } else {
+    els.grid.style.transform = "none";
+  }
 }
 
 async function loadLanguage() {
