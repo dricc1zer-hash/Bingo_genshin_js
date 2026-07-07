@@ -484,7 +484,7 @@ function showMessage(title, message) {
   else window.alert(title + "\n\n" + message);
 }
 
-function resetSettingsToDefaults() {
+async function resetSettingsToDefaults() {
   els.language.value = DEFAULT_LANGUAGE;
   els.difficulty.value = "Normal";
   els.lengthMin.value = "1";
@@ -492,6 +492,7 @@ function resetSettingsToDefaults() {
   els.timeLimit.value = "30";
   els.linePoints.value = "3";
   els.gridSize.value = DEFAULT_GRID_SIZE;
+  await loadLanguage();
   applyGridSize();
 }
 
