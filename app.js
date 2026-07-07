@@ -4,26 +4,18 @@ const PLAYER_COLORS = { green: "#2ecc71", red: "#e74c3c", blue: "#3498db", yello
 const PLAYER_LABELS = { green: "Vert", red: "Rouge", blue: "Bleu", yellow: "Jaune" };
 const COLOR_ORDER = ["green", "red", "blue", "yellow"];
 const DEFAULT_PLAYER_COLOR = "green";
-const GRID_SIZES = {
-  "Normal": 1,
-  "Réduit": 0.75,
-  "Moitié": 0.5
-};
-const DEFAULT_GRID_SIZE = "Normal";
 const LANGUAGES = {
   "FR": "Liste_FR.txt",
   "EN": "Liste_EN.txt",
 };
 const DEFAULT_LANGUAGE = "FR";
 
-// Custom base64 alphabet for seed encoding (64 characters)
 const SEED_ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$&";
 
 const state = {
   entries: [],
   activeColor: DEFAULT_PLAYER_COLOR,
   language: DEFAULT_LANGUAGE,
-  gridSize: DEFAULT_GRID_SIZE,
   gridTexts: [],
   gridColors: [],
   timerRunning: false,
@@ -90,10 +82,8 @@ function parseListFile(content) {
 
 async function bootstrap() {
   try {
-    // Use the value from the HTML select element
     const selectedLang = els.language.value || DEFAULT_LANGUAGE;
     const listFileName = LANGUAGES[selectedLang];
-    console.log("Chargement du fichier:", listFileName);
     const data = await Promise.all([
       loadTextFile(listFileName),
       loadTextFile("Crédits.txt").catch(() => ""),
@@ -101,26 +91,13 @@ async function bootstrap() {
     state.entries = parseListFile(data[0]);
     els.credits.textContent = data[1];
     state.language = selectedLang;
-    console.log("Nombre d'entrées chargées:", state.entries.length);
   } catch (error) {
     showMessage("Erreur", "Impossible de charger les données du jeu.\n" + error.message);
-    console.error("Erreur de chargement:", error);
-    // Try to load default language as fallback
-    try {
-      const listFileName = LANGUAGES[DEFAULT_LANGUAGE];
-      const content = await loadTextFile(listFileName);
-      state.entries = parseListFile(content);
-      state.language = DEFAULT_LANGUAGE;
-      els.language.value = DEFAULT_LANGUAGE;
-    } catch (fallbackError) {
-      console.error("Erreur de chargement du fallback:", fallbackError);
-    }
   }
   buildEmptyGrid();
   updateColorButtons();
   updateTimerDisplay();
   updateSeedButtons();
-  applyGridSize();
 }
 
 function showScreen(screenId) {
@@ -450,7 +427,6 @@ function showResultPopup() {
       };
     });
 
-  // Find the winner(s)
   const maxScore = Math.max(...results.map(r => r.total));
   const winners = results.filter(r => r.total === maxScore);
   const winnerText = winners.length === 1 
@@ -484,30 +460,14 @@ function showMessage(title, message) {
   else window.alert(title + "\n\n" + message);
 }
 
-async function resetSettingsToDefaults() {
+function resetSettingsToDefaults() {
   els.language.value = DEFAULT_LANGUAGE;
   els.difficulty.value = "Normal";
   els.lengthMin.value = "1";
   els.lengthMax.value = "5";
   els.timeLimit.value = "30";
   els.linePoints.value = "3";
-  els.gridSize.value = DEFAULT_GRID_SIZE;
-  await loadLanguage();
-  applyGridSize();
-}
-
-function applyGridSize() {
-  const size = GRID_SIZES[els.gridSize.value] || 1;
-  state.gridSize = els.gridSize.value;
-  
-  // Apply size to grid container
-  if (size < 1) {
-    els.grid.style.transform = `scale(${size})`;
-    els.grid.style.transformOrigin = "top center";
-    els.grid.style.transition = "transform 0.3s ease";
-  } else {
-    els.grid.style.transform = "none";
-  }
+  loadLanguage();
 }
 
 async function loadLanguage() {
@@ -522,25 +482,20 @@ async function loadLanguage() {
   }
 }
 
-// Seed functions
 function encodeSeed() {
   let seed = "";
   for (let row = 0; row < GRID_SIZE; row++) {
     for (let col = 0; col < GRID_SIZE; col++) {
       const text = state.gridTexts[row][col];
       if (!text) {
-        seed += "  "; // Empty cell
+        seed += "  ";
         continue;
       }
-      
-      // Find the index of this text in entries
       const entryIndex = state.entries.findIndex(e => e.proposition === text || e.proposition_detaillee === text);
       if (entryIndex === -1) {
         seed += "  ";
         continue;
       }
-      
-      // Encode index in base64 (custom alphabet)
       let index = entryIndex;
       let encoded = "";
       for (let i = 0; i < 2; i++) {
@@ -558,39 +513,29 @@ function decodeSeed(seed) {
     showMessage("Erreur", "La graine doit contenir exactement 50 caractères.");
     return false;
   }
-
-  // Reset grid colors to white
   state.gridColors = makeMatrix(null).map(row => row.map(() => new Set()));
-  
   let entryIndex = 0;
   for (let row = 0; row < GRID_SIZE; row++) {
     for (let col = 0; col < GRID_SIZE; col++) {
       const char1 = seed[entryIndex];
       const char2 = seed[entryIndex + 1];
       entryIndex += 2;
-
       if (char1 === " " || char2 === " ") {
         state.gridTexts[row][col] = "";
         drawCell(row, col);
         continue;
       }
-
-      // Decode from base64 (custom alphabet)
       const idx1 = SEED_ALPHABET.indexOf(char1);
       const idx2 = SEED_ALPHABET.indexOf(char2);
-      
       if (idx1 === -1 || idx2 === -1) {
         showMessage("Erreur", "Caractère invalide dans la graine : " + (idx1 === -1 ? char1 : char2));
         return false;
       }
-
       const index = idx2 * 64 + idx1;
-      
       if (index < 0 || index >= state.entries.length) {
         showMessage("Erreur", "Index invalide dans la graine : " + index);
         return false;
       }
-
       const entry = state.entries[index];
       const column = propositionColumn();
       state.gridTexts[row][col] = entry[column];
@@ -612,31 +557,27 @@ function closeSeedDialog() {
   els.seedDialog.close();
 }
 
-async function importSeed() {
+function importSeed() {
   if (state.timerRunning) {
     showMessage("Erreur", "Impossible d'importer une graine pendant que le chronomètre est en cours.");
     return;
   }
-  
   els.seedInput.value = "";
   document.getElementById("export-section").style.display = "none";
   document.getElementById("import-section").style.display = "block";
   els.seedDialog.showModal();
 }
 
-async function confirmImport() {
+function confirmImport() {
   const seed = els.seedInput.value.trim();
-  
   if (!seed) {
     showMessage("Erreur", "Veuillez saisir une graine.");
     return;
   }
-
   if (seed.length !== 50) {
     showMessage("Erreur", "La graine doit contenir exactement 50 caractères.");
     return;
   }
-
   const success = decodeSeed(seed);
   if (success) {
     els.seedDialog.close();
@@ -685,7 +626,6 @@ els.startTimer.addEventListener("click", startTimer);
 els.stopTimer.addEventListener("click", stopTimer);
 els.resetSettings.addEventListener("click", resetSettingsToDefaults);
 els.language.addEventListener("change", loadLanguage);
-els.gridSize.addEventListener("change", applyGridSize);
 els.timeLimit.addEventListener("blur", () => validateTimeLimit({ silent: true }));
 els.linePoints.addEventListener("blur", () => validateLinePoints({ silent: true }));
 els.importSeedBtn.addEventListener("click", importSeed);
