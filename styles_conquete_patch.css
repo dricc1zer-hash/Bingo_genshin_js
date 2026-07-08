@@ -1,1 +1,8 @@
 .conquete-grid{min-height:460px;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));grid-template-rows:repeat(7,minmax(56px,1fr));gap:6px}.conq-cell{min-height:56px;border:1px solid #9e988e}.conq-cell.conq-start-frame{border:4px solid rgba(34,124,138,.65)}
+
+/* Cadres coins colorés par joueur (A1 vert, A7 rouge, G1 bleu, G7 jaune) */
+.conq-cell.conq-start-frame[data-conq-corner="green"]{border-color:#2ecc71 !important;}
+.conq-cell.conq-start-frame[data-conq-corner="red"]{border-color:#e74c3c !important;}
+.conq-cell.conq-start-frame[data-conq-corner="blue"]{border-color:#3498db !important;}
+.conq-cell.conq-start-frame[data-conq-corner="yellow"]{border-color:#f1c40f !important;}
+
