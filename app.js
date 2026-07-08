@@ -541,14 +541,18 @@ function drawConqueteCell(row, col) {
   const owner = stateConq.owner[row][col];
 
   if (!stateConq.isPlayable[row][col]) {
+    // Hide "0" cells visually: same background as page and no border/frame
     cell.classList.add("empty");
     cell.classList.remove("filled");
-    cell.style.background = "transparent";
+    cell.style.background = "rgba(255,255,255,.45)";
     cell.style.borderColor = "transparent";
+    cell.style.boxShadow = "none";
+    cell.classList.remove("conq-start-frame");
     cell.querySelector(".cell-text").textContent = "";
     return;
   }
 
+  cell.style.boxShadow = "none";
   cell.style.borderColor = "#9e988e";
 
   cell.classList.toggle("empty", !owner);
@@ -559,10 +563,10 @@ function drawConqueteCell(row, col) {
 
   // Frame only on corner start cells
   cell.classList.toggle("conq-start-frame", isCornerStart(row, col));
-  cell.classList.toggle("conq-start-frame-other", false);
 
   cell.style.background = conqCellBackground(owner);
 }
+
 
 function buildEmptyConqueteGrid() {
   makeConqEmptyGrid();
@@ -621,24 +625,33 @@ function toggleConqCell(row, col) {
 }
 
 function conqAutoStartFillBingoLike() {
-  // Option2: Like Bingo random propositions but no messages.
-  // Interpret as: when user clicks "Commencer" we place only the 4 starting corners
-  // with a random mapping of colors (deterministic-ish via shuffle), but do NOT start timer.
-  // Then when timer is started, players can expand via adjacency rule.
+  // Option2: comme le bingo, "Commencer" remplit les cellules "1".
+  // Les cellules "0" ne sont pas affichées (fond clair de la page) et n'ont pas de cadre.
 
   // Reset owners
   makeConqEmptyGrid();
 
-  // Create a color order shuffled; starting corners must share same proposition constraint.
+  // Random palette assignment like bingo (no adjacency involved here)
   const shuffledColors = shuffle(COLOR_ORDER);
-  // Place corners with 4 different colors.
-  // (Constraint says the 4 start cells have same proposition: we enforce via same palette set usage; visually only color matters.)
-  const starts = CONQ_START_POINTS;
-  for (let i = 0; i < starts.length; i++) {
-    const [r, c] = starts[i];
-    if (stateConq.isPlayable[r][c]) stateConq.owner[r][c] = shuffledColors[i];
+  let colorIndex = 0;
+
+  for (let r = 0; r < GRID_SIZE_CONQ; r++) {
+    for (let c = 0; c < GRID_SIZE_CONQ; c++) {
+      if (!stateConq.isPlayable[r][c]) continue;
+
+      // Constraint start corners: all 4 start cells should share the same proposition.
+      // Simplification: assign them all colors from a shuffled order but kept consistent for the start set.
+      if (isCornerStart(r, c)) {
+        const idx = CONQ_START_POINTS.findIndex(([rr, cc]) => rr === r && cc === c);
+        stateConq.owner[r][c] = shuffledColors[idx] || DEFAULT_PLAYER_COLOR;
+      } else {
+        stateConq.owner[r][c] = shuffledColors[colorIndex % shuffledColors.length];
+        colorIndex++;
+      }
+    }
   }
 }
+
 
 function shuffle(arr) {
   const copy = [...arr];
