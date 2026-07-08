@@ -670,11 +670,12 @@ async function conqAutoStartFillBingoLike() {
   ];
 
   const eqGroup2 = [
-    [0, 1], // A2
-    [GRID_SIZE_CONQ - 1, 1], // B7
-    [5, 0], // F1
-    [5, 6], // G6
+    [0, 1], // A2 => row 0 col 1
+    [1, GRID_SIZE_CONQ - 1], // B7 => row 1 col 6
+    [GRID_SIZE_CONQ - 2, 0], // F1 => row 5 col 0
+    [GRID_SIZE_CONQ - 1, GRID_SIZE_CONQ - 2], // G6 => row 6 col 5
   ];
+
 
   // Tirages de propositions depuis la liste (aléatoire selon Langue)
   // On ne filtre pas par longueur car Conquête n'avait pas de critères dans l'UI.
