@@ -576,10 +576,20 @@ function drawConqueteCell(row, col) {
 
 
   // Frame only on corner start cells
-  cell.classList.toggle("conq-start-frame", isCornerStart(row, col));
+  const isCorner = isCornerStart(row, col);
+  cell.classList.toggle("conq-start-frame", isCorner);
+
+  // Couleur du cadre (obligation de démarrer sur ces cases)
+  if (isCorner) {
+    const cornerColor = cornerOwnerColor(row, col);
+    cell.dataset.conqCorner = cornerColor;
+  } else {
+    cell.dataset.conqCorner = "";
+  }
 
   cell.style.background = conqCellBackground(owner);
 }
+
 
 
 function buildEmptyConqueteGrid() {
