@@ -515,9 +515,20 @@ function makeConqEmptyGrid() {
   stateConq.owner = makeMatrix(GRID_SIZE_CONQ, null);
 }
 
-async function buildConqueteFromFile() {
-  const raw = await loadTextFile("conquete.txt");
-  stateConq.motif = parseConqueteMotif(raw);
+// Grille Conquête 7x7 intégrée (remplace conquete.txt)
+function buildConqueteFromCode() {
+  // 1 = case jouable, 0 = case non utilisée (invisible)
+  stateConq.motif = [
+    [1,1,1,1,0,0,1],
+    [0,1,1,1,1,1,1],
+    [0,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,0],
+    [1,1,1,1,1,1,0],
+    [1,0,0,1,1,1,1],
+  ];
+
+
   stateConq.isPlayable = makeMatrix(GRID_SIZE_CONQ, false);
   for (let r = 0; r < GRID_SIZE_CONQ; r++) {
     for (let c = 0; c < GRID_SIZE_CONQ; c++) {
@@ -525,6 +536,7 @@ async function buildConqueteFromFile() {
     }
   }
 }
+
 
 function cellConqElement(row, col) {
   return els.conqGrid.querySelector(`[data-row="${row}"][data-col="${col}"]`);
@@ -744,13 +756,13 @@ async function bootstrap() {
     showMessage("Erreur", "Impossible de charger les données du jeu.\n" + error.message);
   }
 
-  // Load conquest motif once (for conq screen)
+  // Build Conquête grid motif in code (no file dependency)
   try {
-    await buildConqueteFromFile();
+    buildConqueteFromCode();
   } catch (e) {
-    // Keep app usable for bingo
     console.error(e);
   }
+
 
   buildEmptyGrid();
   updateColorButtons();
