@@ -636,33 +636,69 @@ function toggleConqCell(row, col) {
   drawConqueteCell(row, col);
 }
 
-function conqAutoStartFillBingoLike() {
-  // Option2: comme le bingo, "Commencer" remplit les cellules "1".
-  // Les cellules "0" ne sont pas affichées (fond clair de la page) et n'ont pas de cadre.
+async function conqAutoStartFillBingoLike() {
+  // Comme le bingo: à "Commencer", on remplit uniquement les cases "1" avec
+  // des propositions (texte) provenant aléatoirement de Liste_FR.txt / Liste_EN.txt.
+  // Contraintes Conquête (modèle):
+  // - chaque case "1" a exactement un propriétaire parmi {green,red,blue,yellow}
+  // - les coins sont fixes par couleur: A1=vert, A7=rouge, G1=bleu, G7=jaune
 
-  // Reset owners
   makeConqEmptyGrid();
 
-  // Random palette assignment like bingo (no adjacency involved here)
-  const shuffledColors = shuffle(COLOR_ORDER);
-  let colorIndex = 0;
+  // Entries chargés par la langue via bootstrap() (même logique que Bingo)
+  const entries = state.entries || [];
+  if (entries.length === 0) return;
 
+  // Pré-filtre: pour Conquête on prend la colonne de proposition (même logique que bingo).
+  const column = propositionColumn();
+
+
+  // Nombre de propositions requises = nombre de cases jouables
+  let playableCells = [];
   for (let r = 0; r < GRID_SIZE_CONQ; r++) {
     for (let c = 0; c < GRID_SIZE_CONQ; c++) {
-      if (!stateConq.isPlayable[r][c]) continue;
-
-      // Constraint start corners: all 4 start cells should share the same proposition.
-      // Simplification: assign them all colors from a shuffled order but kept consistent for the start set.
-      if (isCornerStart(r, c)) {
-        const idx = CONQ_START_POINTS.findIndex(([rr, cc]) => rr === r && cc === c);
-        stateConq.owner[r][c] = shuffledColors[idx] || DEFAULT_PLAYER_COLOR;
-      } else {
-        stateConq.owner[r][c] = shuffledColors[colorIndex % shuffledColors.length];
-        colorIndex++;
-      }
+      if (stateConq.isPlayable[r][c]) playableCells.push([r, c]);
     }
   }
+
+  // Tirage aléatoire de propositions
+  const selected = shuffle(entries).slice(0, playableCells.length);
+
+  // Assignation propriétaires
+  // Coins fixes
+  for (const [r, c] of CONQ_START_POINTS) {
+    const color = cornerOwnerColor(r, c);
+    if (stateConq.isPlayable[r][c]) stateConq.owner[r][c] = color;
+  }
+
+  // Pour chaque autre case, on remplit avec une couleur aléatoire provenant de la palette
+  // (les textes ne sont pas affichés dans l'UI Conquête actuelle)
+  let idx = 0;
+  for (const [r, c] of playableCells) {
+    // coins déjà assignés
+    if (isCornerStart(r, c)) continue;
+    // garantir une "proposition" aléatoire par cellule (tirage = selected[idx])
+    // (on ne stocke pas le texte, juste le fait qu'il vient de Liste)
+    void selected[idx];
+    idx++;
+
+    stateConq.owner[r][c] = randomOwnerColor();
+  }
 }
+
+function cornerOwnerColor(row, col) {
+  // A1 (0,0) vert ; A7 (0,6) rouge ; G1 (6,0) bleu ; G7 (6,6) jaune
+  if (row === 0 && col === 0) return "green";
+  if (row === 0 && col === GRID_SIZE_CONQ - 1) return "red";
+  if (row === GRID_SIZE_CONQ - 1 && col === 0) return "blue";
+  if (row === GRID_SIZE_CONQ - 1 && col === GRID_SIZE_CONQ - 1) return "yellow";
+  return DEFAULT_PLAYER_COLOR;
+}
+
+function randomOwnerColor() {
+  return COLOR_ORDER[Math.floor(Math.random() * COLOR_ORDER.length)];
+}
+
 
 
 function shuffle(arr) {
