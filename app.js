@@ -570,8 +570,10 @@ function drawConqueteCell(row, col) {
   cell.classList.toggle("empty", !owner);
   cell.classList.toggle("filled", Boolean(owner));
 
-  // No text, only background color.
-  cell.querySelector(".cell-text").textContent = "";
+  // Texte (rendu Conquête)
+  const text = (stateConq.texts && stateConq.texts[row] && stateConq.texts[row][col]) ? stateConq.texts[row][col] : "";
+  cell.querySelector(".cell-text").textContent = text || "";
+
 
   // Frame only on corner start cells
   cell.classList.toggle("conq-start-frame", isCornerStart(row, col));
@@ -637,30 +639,88 @@ function toggleConqCell(row, col) {
 }
 
 async function conqAutoStartFillBingoLike() {
-  // Règle demandée: "Commencer" ne doit PAS colorer les cases.
-  // Donc on ne met AUCUN owner sur la grille Conquête.
-  // (Les propriétaires seront posés uniquement par l'utilisateur via clicks.)
+  // Règle demandée:
+  // - "Commencer" met le TEXTE des propositions dans les cellules.
+  // - "Commencer" ne DOIT PAS colorer (pas d'owner) : l'utilisateur clique ensuite.
 
   makeConqEmptyGrid();
 
-  // On conserve tout de même le tirage de propositions (aléatoire selon Langue),
-  // mais comme l'UI Conquête actuelle n'affiche pas de texte, on ne stocke rien.
   const entries = state.entries || [];
   if (entries.length === 0) return;
 
-  // Pré-filtre: colonne proposition (même logique que bingo)
   const column = propositionColumn();
-  void column;
 
-  // Placeholder tirage pour conserver l'aléatoire côté logique (si plus tard tu affiches du texte)
+  // Liste des cellules jouables (motif=1)
   let playableCells = [];
   for (let r = 0; r < GRID_SIZE_CONQ; r++) {
     for (let c = 0; c < GRID_SIZE_CONQ; c++) {
       if (stateConq.isPlayable[r][c]) playableCells.push([r, c]);
     }
   }
-  shuffle(entries).slice(0, playableCells.length);
+
+  // Règles d'égalité de proposition demandées :
+  // - A1=A7=G1=G7
+  // - A2=B7=F1=G6
+  // (coordonnées en index 0-based: A*=col0, B*=col1, ...)
+  const eqGroup1 = [
+    [0, 0],
+    [0, GRID_SIZE_CONQ - 1],
+    [GRID_SIZE_CONQ - 1, 0],
+    [GRID_SIZE_CONQ - 1, GRID_SIZE_CONQ - 1],
+  ];
+
+  const eqGroup2 = [
+    [0, 1], // A2
+    [GRID_SIZE_CONQ - 1, 1], // B7
+    [5, 0], // F1
+    [5, 6], // G6
+  ];
+
+  // Tirages de propositions depuis la liste (aléatoire selon Langue)
+  // On ne filtre pas par longueur car Conquête n'avait pas de critères dans l'UI.
+  const selectedForTexts = shuffle(entries).map(e => e[column]);
+  let textIdx = 0;
+
+  function nextText() {
+    if (textIdx >= selectedForTexts.length) {
+      // boucle si jamais la liste est courte
+      textIdx = 0;
+    }
+    return selectedForTexts[textIdx++];
+  }
+
+  // Assignation texte: on écrit directement dans le DOM via drawConqueteCell
+  // => on stocke temporairement dans stateConq.owner? non. On doit avoir un champ texte.
+  // On utilise un tableau dédié.
+  if (!stateConq.texts) stateConq.texts = makeMatrix(GRID_SIZE_CONQ, "");
+
+  // clear texts
+  stateConq.texts = makeMatrix(GRID_SIZE_CONQ, "");
+
+  // group1 text
+  const text1 = nextText();
+  for (const [r, c] of eqGroup1) {
+    if (stateConq.isPlayable[r][c]) stateConq.texts[r][c] = text1;
+  }
+
+  // group2 text
+  const text2 = nextText();
+  for (const [r, c] of eqGroup2) {
+    if (stateConq.isPlayable[r][c]) stateConq.texts[r][c] = text2;
+  }
+
+  // autres cellules jouables: texte aléatoire
+  for (const [r, c] of playableCells) {
+    if (stateConq.texts[r][c]) continue;
+    stateConq.texts[r][c] = nextText();
+  }
+
+  // Dessin pour afficher le texte.
+  for (const [r, c] of playableCells) {
+    drawConqueteCell(r, c);
+  }
 }
+
 
 
 function cornerOwnerColor(row, col) {
