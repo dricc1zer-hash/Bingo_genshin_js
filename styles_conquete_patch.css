@@ -1,0 +1,1 @@
+.conquete-grid{min-height:460px;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));grid-template-rows:repeat(7,minmax(56px,1fr));gap:6px}.conq-cell{min-height:56px;border:1px solid #9e988e}.conq-cell.conq-start-frame{border:4px solid rgba(34,124,138,.65)}
