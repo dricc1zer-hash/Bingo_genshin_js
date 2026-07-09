@@ -1013,8 +1013,16 @@ if (els.fillConq) els.fillConq.addEventListener("click", () => {
   fillConquete();
 });
 
-if (els.startTimer) els.startTimer.addEventListener("click", startTimer);
+if (els.startTimer) {
+  els.startTimer.addEventListener("click", () => {
+    // In Conquête, the user first presses "Commencer" (fill-grid-conquete)
+    // which places the texts only. Pressing "Démarrer chrono" must start the timer.
+    // No special Conquête-start logic is needed: startTimer() handles both modes.
+    startTimer();
+  });
+}
 if (els.stopTimer) els.stopTimer.addEventListener("click", stopTimer);
+
 
 if (els.resetSettings) els.resetSettings.addEventListener("click", () => {
   // Bingo settings defaults only
