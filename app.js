@@ -1002,6 +1002,8 @@ if (els.colorButtons) {
     button.addEventListener("click", () => {
       state.activeColor = button.dataset.color;
       updateColorButtons();
+          console.debug("[color] change", { mode: state.mode, timerRunning: state.timerRunning });
+
     });
   });
 }
