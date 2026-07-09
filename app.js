@@ -1003,7 +1003,6 @@ if (els.colorButtons) {
       state.activeColor = button.dataset.color;
       updateColorButtons();
           console.debug("[color] change", { mode: state.mode, timerRunning: state.timerRunning });
-
     });
   });
 }
@@ -1015,23 +1014,23 @@ if (els.fillConq) els.fillConq.addEventListener("click", () => {
   fillConquete();
 });
 
-if (els.startTimer) {
-  els.startTimer.addEventListener("click", () => {
+// Timer wiring via event delegation (robust even if DOM timing/caching differs)
+document.addEventListener("click", event => {
+  const startBtn = event.target.closest && event.target.closest("#start-timer");
+  if (startBtn) {
     console.debug("[timer] start click", { mode: state.mode, timerRunning: state.timerRunning });
     startTimer();
-  });
-} else {
-  console.warn("[timer] #start-timer not found");
-}
+    return;
+  }
 
-if (els.stopTimer) {
-  els.stopTimer.addEventListener("click", () => {
+  const stopBtn = event.target.closest && event.target.closest("#stop-timer");
+  if (stopBtn) {
     console.debug("[timer] stop click", { mode: state.mode, timerRunning: state.timerRunning });
     stopTimer();
-  });
-} else {
-  console.warn("[timer] #stop-timer not found");
-}
+    return;
+  }
+});
+
 
 
 if (els.resetSettings) els.resetSettings.addEventListener("click", () => {
