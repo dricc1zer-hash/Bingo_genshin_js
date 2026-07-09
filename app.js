@@ -37,7 +37,13 @@ const els = {
 
   // Bingo
   grid: document.querySelector("#bingo-grid"),
+  // timer output (Bingo)
   timer: document.querySelector("#timer"),
+
+  // timer output (Conquête)
+  timerConq: document.querySelector("#timer-conquete"),
+
+
   fillGrid: document.querySelector("#fill-grid"),
 
   // Conquête
@@ -176,9 +182,11 @@ function clearTimerInterval() {
 }
 
 function updateTimerDisplay() {
-  if (!els.timer) return;
-  els.timer.textContent = "Chronomètre : " + formatTime(elapsedSeconds());
+  const t = state.mode === "conquete" ? els.timerConq : els.timer;
+  if (!t) return;
+  t.textContent = "Chronomètre : " + formatTime(elapsedSeconds());
 }
+
 
 function tickTimer() {
   updateTimerDisplay();
