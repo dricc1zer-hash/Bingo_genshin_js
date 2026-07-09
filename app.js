@@ -1015,13 +1015,21 @@ if (els.fillConq) els.fillConq.addEventListener("click", () => {
 
 if (els.startTimer) {
   els.startTimer.addEventListener("click", () => {
-    // In Conquête, the user first presses "Commencer" (fill-grid-conquete)
-    // which places the texts only. Pressing "Démarrer chrono" must start the timer.
-    // No special Conquête-start logic is needed: startTimer() handles both modes.
+    console.debug("[timer] start click", { mode: state.mode, timerRunning: state.timerRunning });
     startTimer();
   });
+} else {
+  console.warn("[timer] #start-timer not found");
 }
-if (els.stopTimer) els.stopTimer.addEventListener("click", stopTimer);
+
+if (els.stopTimer) {
+  els.stopTimer.addEventListener("click", () => {
+    console.debug("[timer] stop click", { mode: state.mode, timerRunning: state.timerRunning });
+    stopTimer();
+  });
+} else {
+  console.warn("[timer] #stop-timer not found");
+}
 
 
 if (els.resetSettings) els.resetSettings.addEventListener("click", () => {
