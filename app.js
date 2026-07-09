@@ -29,7 +29,7 @@ const state = {
   timerId: null,
 
   // Mode
-  mode: "bingo" // "bingo" | "conquete"
+  mode: "bingo" // "bingo" | "conquete" | "route"
 };
 
 const els = {
@@ -852,6 +852,7 @@ function showScreen(screenId) {
 
   if (screenId === "bingo-screen") resetBingoScreen();
   if (screenId === "conquete-screen") resetConqueteScreen();
+  if (screenId === "route-screen" && typeof resetRouteScreen === "function") resetRouteScreen();
 }
 
 function updateLanguageAndLoad() {
@@ -892,6 +893,8 @@ async function bootstrap() {
   if (els.conqGrid && stateConq.isPlayable) {
     buildEmptyConqueteGrid();
   }
+
+  if (typeof initRouteModule === "function") initRouteModule();
 }
 
 // -------------------- Seed modal (Bingo only) --------------------

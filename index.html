@@ -6,6 +6,7 @@
   <title>Bingo Genshin Impact</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="styles_conquete_patch.css">
+  <link rel="stylesheet" href="styles_route.css">
 
   <style>
     .seed-dialog {
@@ -81,6 +82,7 @@
       <nav class="menu-actions" aria-label="Menu principal">
         <button class="primary-action" data-screen="bingo-screen">Bingo</button>
         <button data-screen="conquete-screen">Conquête</button>
+        <button data-screen="route-screen">Bingo Route</button>
         <button data-screen="settings-screen">Paramètres</button>
         <button data-screen="credits-screen">Crédits</button>
 
@@ -139,6 +141,25 @@
       <button class="back-button" data-screen="main-screen">Menu principal</button>
     </section>
 
+    <section id="route-screen" class="screen game-screen route-screen" aria-labelledby="route-title">
+      <header class="game-header">
+        <h2 id="route-title">Bingo Route</h2>
+      </header>
+      <div class="route-layout">
+        <div class="route-main">
+          <div class="route-board-wrap">
+            <svg id="route-arrows" class="route-arrows" aria-hidden="true"></svg>
+            <div id="route-board" class="route-board" aria-label="Plateau Bingo Route"></div>
+          </div>
+          <div class="route-footer">
+            <button id="fill-route" class="primary-action">Commencer</button>
+            <button class="back-button route-back-button" data-screen="main-screen">Menu principal</button>
+          </div>
+        </div>
+        <div id="route-controls" class="route-controls" aria-label="Contrôles des joueurs"></div>
+      </div>
+    </section>
+
     <section id="credits-screen" class="screen credits-screen" aria-labelledby="credits-title">
       <h2 id="credits-title">Crédits</h2><article id="credits-content" class="credits-content"></article><button class="back-button" data-screen="main-screen">Menu principal</button>
     </section>
@@ -170,6 +191,7 @@
     </div>
   </dialog>
   <script src="app.js"></script>
+  <script src="route.js"></script>
 </body>
 </html>
 
