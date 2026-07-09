@@ -641,15 +641,40 @@ function conqHasAdjacentOwner(row, col, color) {
   return false;
 }
 
+function cornerCellsByColor() {
+  // A1 (0,0) = green ; A7 (0,6) = red ; G1 (6,0) = blue ; G7 (6,6) = yellow
+  return {
+    green: [0, 0],
+    red: [0, GRID_SIZE_CONQ - 1],
+    blue: [GRID_SIZE_CONQ - 1, 0],
+    yellow: [GRID_SIZE_CONQ - 1, GRID_SIZE_CONQ - 1],
+  };
+}
+
+function conqHasAnyCellForColor(color) {
+  for (let r = 0; r < GRID_SIZE_CONQ; r++) {
+    for (let c = 0; c < GRID_SIZE_CONQ; c++) {
+      if (stateConq.owner[r][c] === color) return true;
+    }
+  }
+  return false;
+}
+
 function toggleConqCell(row, col) {
   // Must respect: adjacency rule only when user tries to color.
   if (!state.timerRunning) return;
   if (!stateConq.isPlayable[row][col]) return;
   if (stateConq.owner[row][col]) return; // already taken
 
-  // Only allow if adjacent to a same-color cell
-  if (!conqHasAdjacentOwner(row, col, state.activeColor)) {
-    return;
+  // If this color doesn't own any cell yet, only the corner start cell is allowed.
+  if (!conqHasAnyCellForColor(state.activeColor)) {
+    const corner = cornerCellsByColor()[state.activeColor];
+    if (!corner) return;
+    const [cr, cc] = corner;
+    if (row !== cr || col !== cc) return;
+  } else {
+    // Otherwise apply adjacency rule.
+    if (!conqHasAdjacentOwner(row, col, state.activeColor)) return;
   }
 
   stateConq.owner[row][col] = state.activeColor;
