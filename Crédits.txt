@@ -1,4 +1,4 @@
-Trosk_1 : Programmation et Remplissage
+Trosk_1 : Programmation & Remplissage
 
 A noter :
 - Si on vous demande d'acheter qq chose et que le marchand n'en n'a plus , considerez comme validé
