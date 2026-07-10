@@ -867,7 +867,7 @@ function updateLanguageAndLoad() {
 
 async function bootstrap() {
   // Load and wire Bingo help (async file load)
-  if (els.helpBingoBtn && els.helpDialog && els.helpDialogContent && els.helpBingoClose) {
+  if (els.helpBingoBtn && els.helpBingoDialog && els.helpDialogContent && els.helpBingoClose) {
     els.helpDialogContent.textContent = "Chargement...";
     els.helpBingoBtn.addEventListener("click", async () => {
       try {
