@@ -42,9 +42,9 @@ const els = {
 
   // Aide Bingo
   helpBingoBtn: document.querySelector("#help-bingo"),
-  helpDialog: document.querySelector("#help-bingo-dialog"),
-  helpDialogContent: document.querySelector("#help-bingo-content"),
-  helpDialogClose: document.querySelector("#help-bingo-close"),
+  helpBingoDialog: document.querySelector("#help-bingo-dialog"),
+  helpBingoDialogContent: document.querySelector("#help-bingo-content"),
+  helpBingoDialogClose: document.querySelector("#help-bingo-close"),
 
   // timer output (Conquête)
   timerConq: document.querySelector("#timer-conquete"),
