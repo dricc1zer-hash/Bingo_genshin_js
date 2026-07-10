@@ -1,5 +1,6 @@
 const GRID_SIZE = 5;
 const CELLS_COUNT = GRID_SIZE * GRID_SIZE;
+const GRID_SIZE_CONQ = 7;
 const PLAYER_COLORS = { green: "#2ecc71", red: "#e74c3c", blue: "#3498db", yellow: "#f1c40f" };
 const PLAYER_LABELS = { green: "Vert", red: "Rouge", blue: "Bleu", yellow: "Jaune" };
 const COLOR_ORDER = ["green", "red", "blue", "yellow"];
@@ -13,31 +14,56 @@ const DEFAULT_LANGUAGE = "FR";
 const SEED_ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$&";
 
 const state = {
+  // Bingo
   entries: [],
   activeColor: DEFAULT_PLAYER_COLOR,
   language: DEFAULT_LANGUAGE,
   gridTexts: [],
+  gridLengths: [],
   gridColors: [],
+
+  // Timer
   timerRunning: false,
   timerStart: null,
   timerElapsed: 0,
   timerId: null,
+
+  // Mode
+  mode: "bingo" // "bingo" | "conquete" | "route"
 };
 
 const els = {
   screens: [...document.querySelectorAll(".screen")],
+
+  // Bingo
   grid: document.querySelector("#bingo-grid"),
+  // timer output (Bingo)
   timer: document.querySelector("#timer"),
+
+  // timer output (Conquête)
+  timerConq: document.querySelector("#timer-conquete"),
+
+
   fillGrid: document.querySelector("#fill-grid"),
+
+  // Conquête
+  conqGrid: document.querySelector("#conquete-grid"),
+  fillConq: document.querySelector("#fill-grid-conquete"),
+
   startTimer: document.querySelector("#start-timer"),
   stopTimer: document.querySelector("#stop-timer"),
+
+  // Settings
   difficulty: document.querySelector("#difficulty"),
   lengthMin: document.querySelector("#length-min"),
   lengthMax: document.querySelector("#length-max"),
   timeLimit: document.querySelector("#time-limit"),
   linePoints: document.querySelector("#line-points"),
+  showLength: document.querySelector("#show-length"),
   resetSettings: document.querySelector("#reset-settings"),
   language: document.querySelector("#language"),
+
+  // Seed modal (Bingo only)
   colorButtons: [...document.querySelectorAll(".color-button")],
   credits: document.querySelector("#credits-content"),
   dialog: document.querySelector("#message-dialog"),
@@ -55,16 +81,32 @@ const els = {
   helpBtn: document.querySelector("#help-btn"),
 };
 
-function makeMatrix(value) {
-  return Array.from({ length: GRID_SIZE }, () =>
-    Array.from({ length: GRID_SIZE }, () => value)
+function makeMatrix(size, value) {
+  return Array.from({ length: size }, () =>
+    Array.from({ length: size }, () => value)
   );
 }
 
-async function loadTextFile(fileName) {
-  const response = await fetch(fileName);
-  if (!response.ok) throw new Error(fileName + " introuvable");
-  return response.text();
+function isCornerStart(row, col) {
+  // A1, A7, G1, G7 => (0,0),(0,6),(6,0),(6,6)
+  return (row === 0 || row === GRID_SIZE_CONQ - 1) && (col === 0 || col === GRID_SIZE_CONQ - 1);
+}
+
+function neighbors4(r, c, size) {
+  return [
+    [r - 1, c],
+    [r + 1, c],
+    [r, c - 1],
+    [r, c + 1],
+  ].filter(([rr, cc]) => rr >= 0 && cc >= 0 && rr < size && cc < size);
+}
+
+function loadTextFile(fileName) {
+  return fetch(fileName)
+    .then(response => {
+      if (!response.ok) throw new Error(fileName + " introuvable");
+      return response.text();
+    });
 }
 
 function parseListFile(content) {
@@ -83,15 +125,13 @@ function parseListFile(content) {
 
 async function bootstrap() {
   try {
-    const selectedLang = els.language.value || DEFAULT_LANGUAGE;
-    const listFileName = LANGUAGES[selectedLang];
-    const data = await Promise.all([
+    const listFileName = LANGUAGES[DEFAULT_LANGUAGE];
+    const [listContent, creditsContent] = await Promise.all([
       loadTextFile(listFileName),
       loadTextFile("Crédits.txt").catch(() => ""),
     ]);
-    state.entries = parseListFile(data[0]);
-    els.credits.textContent = data[1];
-    state.language = selectedLang;
+    state.entries = parseListFile(listContent);
+    els.credits.textContent = creditsContent;
   } catch (error) {
     showMessage("Erreur", "Impossible de charger les données du jeu.\n" + error.message);
   }
@@ -123,8 +163,9 @@ function resetBingoScreen() {
 }
 
 function buildEmptyGrid() {
-  state.gridTexts = makeMatrix("");
-  state.gridColors = makeMatrix(null).map(row => row.map(() => new Set()));
+  state.gridTexts = makeMatrix(GRID_SIZE, "");
+  state.gridLengths = makeMatrix(GRID_SIZE, 0);
+  state.gridColors = makeMatrix(GRID_SIZE, null).map(row => row.map(() => new Set()));
   els.grid.innerHTML = "";
   for (let row = 0; row < GRID_SIZE; row++) {
     for (let col = 0; col < GRID_SIZE; col++) {
@@ -196,6 +237,7 @@ function fillGrid() {
     const row = Math.floor(index / GRID_SIZE);
     const col = index % GRID_SIZE;
     state.gridTexts[row][col] = entry[column];
+    state.gridLengths[row][col] = entry.longueur;
     drawCell(row, col);
   });
 }
@@ -523,7 +565,7 @@ function decodeSeed(seed) {
     showMessage("Erreur", "La graine doit contenir exactement 50 caractères.");
     return false;
   }
-  state.gridColors = makeMatrix(null).map(row => row.map(() => new Set()));
+  state.gridColors = makeMatrix(GRID_SIZE, null).map(row => row.map(() => new Set()));
   let entryIndex = 0;
   for (let row = 0; row < GRID_SIZE; row++) {
     for (let col = 0; col < GRID_SIZE; col++) {
