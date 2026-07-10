@@ -7,4 +7,4 @@ L'objectif de ce jeu est de marquer le plus de points en réalisant les proposit
 -Quand tout les joueurs sont prets, appuyez sur "Démarrer Chrono" . Les joueurs peuvent alors bouger et tenter de réaliser les propositions .
 -Quand un joueur complete la proposition d'une case , appuyez sur sa couleur puis sur la case concernée . En cas d'erreur , re-cliquer sur la case enlevera la couleur .
 -Le jeu s'arrete automatiquement quand le temps est écoulé . on peux aussi l'arreter en appuyant sur "Arreter Chrono" . une fenetre avec les scores s'affiche alors .
-- Notez qu'il est possible à tout moment de faire une pause . il suffit d'appuyer sur "Arreter Chrono" puis quand vous voulez reprendre , appuyez sur "démarrer chrono" .
+-Notez qu'il est possible à tout moment de faire une pause . il suffit d'appuyer sur "Arreter Chrono" puis quand vous voulez reprendre , appuyez sur "démarrer chrono" .
