@@ -871,9 +871,8 @@ async function bootstrap() {
     els.helpDialogContent.textContent = "Chargement...";
     els.helpBingoBtn.addEventListener("click", async () => {
       try {
-      const txt = await loadTextFile("HELP_bingo.txt.txt").catch(() => loadTextFile("HELP_bingo.txt"));
-        // Support legacy filenames (if any)
-        // (No-op; just ensures catch chain is stable)
+        // Support filename expected in this project
+        const txt = await loadTextFile("HELP_bingo.txt").catch(() => loadTextFile("HELP_bingo.txt"));
         els.helpDialogContent.textContent = txt;
         els.helpDialog.showModal();
       } catch (e) {

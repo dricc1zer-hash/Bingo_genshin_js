@@ -90,9 +90,12 @@
 
 
       <header class="game-header">
-        <h2 id="bingo-title">Bingo</h2>
-        <button id="help-bingo" class="help-button" type="button" aria-label="Aide Bingo">?</button>
+        <div class="bingo-title-row" style="display:flex;align-items:center;gap:4px;">
+          <h2 id="bingo-title" style="margin:0;">Bingo</h2>
+          <button id="help-bingo" class="help-button" type="button" aria-label="Aide Bingo" style="margin:0;padding:0 6px;">?</button>
+        </div>
         <output id="timer" class="timer">Chronomètre : 00:00:00</output>
+
       </header>
       <div class="toolbar" aria-label="Contrôles de partie">
         <button id="fill-grid">Commencer</button><button id="start-timer">Démarrer chrono</button><button id="stop-timer">Arrêter chrono</button>
