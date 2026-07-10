@@ -40,6 +40,12 @@ const els = {
   // timer output (Bingo)
   timer: document.querySelector("#timer"),
 
+  // Aide Bingo
+  helpBingoBtn: document.querySelector("#help-bingo"),
+  helpDialog: document.querySelector("#help-bingo-dialog"),
+  helpDialogContent: document.querySelector("#help-bingo-content"),
+  helpDialogClose: document.querySelector("#help-bingo-close"),
+
   // timer output (Conquête)
   timerConq: document.querySelector("#timer-conquete"),
 
@@ -860,6 +866,25 @@ function updateLanguageAndLoad() {
 }
 
 async function bootstrap() {
+  // Load and wire Bingo help (async file load)
+  if (els.helpBingoBtn && els.helpBingoDialog && els.helpDialogContent && els.helpBingoClose) {
+    els.helpDialogContent.textContent = "Chargement...";
+    els.helpBingoBtn.addEventListener("click", async () => {
+      try {
+      const txt = await loadTextFile("HELP_bingo.txt.txt").catch(() => loadTextFile("HELP_bingo.txt"));
+        // Support legacy filenames (if any)
+        // (No-op; just ensures catch chain is stable)
+        els.helpDialogContent.textContent = txt;
+        els.helpDialog.showModal();
+      } catch (e) {
+        els.helpDialogContent.textContent = "Aide indisponible: " + (e?.message || String(e));
+        els.helpDialog.showModal();
+      }
+    });
+    els.helpBingoClose.addEventListener("click", () => {
+      try { els.helpDialog.close(); } catch (_) {}
+    });
+  }
   try {
     const selectedLang = els.language.value || DEFAULT_LANGUAGE;
     const listFileName = LANGUAGES[selectedLang];
