@@ -867,21 +867,30 @@ function updateLanguageAndLoad() {
 
 async function bootstrap() {
   // Load and wire Bingo help (async file load)
-  if (els.helpBingoBtn && els.helpBingoDialog && els.helpDialogContent && els.helpBingoClose) {
+  // Aide Bingo
+  if (
+    els.helpBingoBtn &&
+    els.helpBingoDialog &&
+    els.helpDialogContent &&
+    els.helpBingoClose
+  ) {
     els.helpDialogContent.textContent = "Chargement...";
+
     els.helpBingoBtn.addEventListener("click", async () => {
       try {
-        // Support filename expected in this project
         const txt = await loadTextFile("HELP_bingo.txt").catch(() => loadTextFile("HELP_bingo.txt"));
         els.helpDialogContent.textContent = txt;
-        els.helpDialog.showModal();
+        els.helpBingoDialog.showModal();
       } catch (e) {
         els.helpDialogContent.textContent = "Aide indisponible: " + (e?.message || String(e));
-        els.helpDialog.showModal();
+        els.helpBingoDialog.showModal();
       }
     });
+
     els.helpBingoClose.addEventListener("click", () => {
-      try { els.helpDialog.close(); } catch (_) {}
+      try {
+        els.helpBingoDialog.close();
+      } catch (_) {}
     });
   }
   try {
