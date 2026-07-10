@@ -1,10 +1,31 @@
-Ce mode de jeu est jouable de 1 à 4 joueurs . Si vous êtes seul , choisissez une couleur (On vous conseille le vert) .
-Ce n'est pas synchronisé . il faut donc une personne qui maintient le bingo, idéalement , quelqu'un qui ne joue pas et qui sert donc d'arbitre .
-L'objectif de ce jeu est de marquer le plus de points en réalisant les propositions du carré . Chaque proposition vaux 1 point mais réaliser une ligne/colonne/diagonale entiere vous donnera une bonus (3 points par défaut , modifiable dans les parametres) . Le jeu dure un maximum de 30 minutes (modifiable dans les parametres) Mais les joueurs peuvent se mettre d'accord pour arreter avant . Les cases ne sont pas exclusives (elles peuvent etre réalisées par plusieurs joueurs)
--Chaque joueur se connecte à genshin impact mais reste immobile
--Appuyez sur "Commencer" pour rempir les cases
--Les joueurs peuvent prendre le temps d'analyser le contenu des cases pour se faire un plan de progression
--Quand tout les joueurs sont prets, appuyez sur "Démarrer Chrono" . Les joueurs peuvent alors bouger et tenter de réaliser les propositions .
--Quand un joueur complete la proposition d'une case , appuyez sur sa couleur puis sur la case concernée . En cas d'erreur , re-cliquer sur la case enlevera la couleur .
--Le jeu s'arrete automatiquement quand le temps est écoulé . on peux aussi l'arreter en appuyant sur "Arreter Chrono" . une fenetre avec les scores s'affiche alors .
--Notez qu'il est possible à tout moment de faire une pause . il suffit d'appuyer sur "Arreter Chrono" puis quand vous voulez reprendre , appuyez sur "démarrer chrono" .
+BIENVENUE DANS LE BINGO GENSHIN IMPACT
+
+COMMENT JOUER :
+
+1. PRÃ‰PARATION
+   - Allez dans "ParamÃ¨tres" pour configurer la difficultÃ© et la langue
+   - Cliquez sur "Commencer" pour gÃ©nÃ©rer la grille de bingo
+   - La grille contient 25 cases avec des propositions du jeu
+
+2. DÃ‰ROULEMENT D'UNE PARTIE
+   - Cliquez sur "DÃ©marrer chrono" pour lancer le chronomÃ¨tre
+   - Chaque joueur choisit une couleur (Vert, Rouge, Bleu, Jaune)
+   - Quand une proposition est rÃ©alisÃ©e dans le jeu, cliquez sur la case correspondante
+   - Vous pouvez cliquer plusieurs fois sur une case pour changer la couleur
+
+3. CONDITIONS DE VICTOIRE
+   - ComplÃ©tez une ligne, colonne ou diagonale avec votre couleur
+   - Chaque ligne complÃ¨te donne des points bonus
+   - Le joueur avec le plus de points Ã  la fin du temps remporte la partie !
+
+4. FONCTIONNALITÃ‰S
+   - Import/Export de graine : Sauvegardez ou chargez une grille
+   - Multilingue : FR/EN disponible
+   - DifficultÃ© Facile : Affiche la rÃ©gion en plus de la proposition
+
+5. CONSEILS
+   - Utilisez le bouton "?" pour relire cette aide
+   - Le chronomÃ¨tre s'arrÃªte automatiquement Ã  la limite de temps
+   - Vous pouvez arrÃªter le chrono manuellement avec "ArrÃªter chrono"
+
+BON JEU !
