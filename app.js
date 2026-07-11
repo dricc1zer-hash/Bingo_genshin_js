@@ -78,6 +78,7 @@ const els = {
   cancelSeedBtn: document.querySelector("#cancel-seed"),
   pasteSeedBtn: document.querySelector("#paste-seed"),
   copySeedBtn: document.querySelector("#copy-seed"),
+  helpBingoBtn: document.querySelector("#help-bingo-btn"),
 };
 
 function makeMatrix(size, value) {
@@ -859,7 +860,15 @@ function updateLanguageAndLoad() {
   // Keep original behavior for bingo language.
 }
 
-async function bootstrap() {
+
+async function showBingoHelp() {
+  try {
+    const helpText = await loadTextFile("HELP_bingo.txt");
+    showMessage("Aide", helpText);
+  } catch (error) {
+    showMessage("Erreur", "Impossible de charger le fichier d'aide." + error.message);
+  }
+}async function bootstrap() {
   try {
     const selectedLang = els.language.value || DEFAULT_LANGUAGE;
     const listFileName = LANGUAGES[selectedLang];
@@ -1118,5 +1127,6 @@ async function loadLanguage() {
   }
 }
 
+els.helpBingoBtn.addEventListener("click", showBingoHelp);
 bootstrap();
 
