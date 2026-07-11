@@ -14,7 +14,7 @@
       border-radius: 12px;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
       padding: 0;
-      max-width: 500px;
+      max-width: 667px;
       width: 90%;
     }
     
@@ -70,6 +70,27 @@
       outline: none;
       border-color: #3498db;
     }
+
+    .help-button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-left: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      vertical-align: middle;
+    }
+    
+    .help-button:hover {
+      background-color: #2980b9;
+    }
   </style>
 </head>
 <body>
@@ -91,7 +112,7 @@
     <section id="bingo-screen" class="screen game-screen" aria-labelledby="bingo-title">
 
 
-      <header class="game-header"><h2 id="bingo-title">Bingo</h2><output id="timer" class="timer">Chronomètre : 00:00:00</output></header>
+      <header class="game-header"><h2 id="bingo-title">Bingo</h2><button id="help-btn" class="help-button" style="margin-left: 3px;">?</button><output id="timer" class="timer">Chronomètre : 00:00:00</output></header>
       <div class="toolbar" aria-label="Contrôles de partie">
         <button id="fill-grid">Commencer</button><button id="start-timer">Démarrer chrono</button><button id="stop-timer">Arrêter chrono</button>
         <div class="player-colors" aria-label="Couleur du joueur actif">
@@ -105,9 +126,23 @@
       </div>
       <button class="back-button" data-screen="main-screen">Menu principal</button>
     </section>
+    <section id="conquete-screen" class="screen game-screen" aria-labelledby="conquete-title">
+      <header class="game-header"><h2 id="conquete-title">Conquête</h2><output id="timer-conquete" class="timer">Chronomètre : 00:00:00</output></header>
+      <div class="toolbar" aria-label="Contrôles de partie">
+        <button id="fill-grid-conquete">Commencer</button><button id="start-timer-conquete">Démarrer chrono</button><button id="stop-timer-conquete">Arrêter chrono</button>
+      </div>
+      <div id="conquete-grid" class="conquete-grid" aria-label="Grille de conquête"></div>
+      <button class="back-button" data-screen="main-screen">Menu principal</button>
+    </section>
+    <section id="route-screen" class="screen game-screen" aria-labelledby="route-title">
+      <header class="game-header"><h2 id="route-title">Bingo Route</h2><output id="timer-route" class="timer">Chronomètre : 00:00:00</output></header>
+      <div class="toolbar" aria-label="Contrôles de partie">
+        <button id="fill-grid-route">Commencer</button><button id="start-timer-route">Démarrer chrono</button><button id="stop-timer-route">Arrêter chrono</button>
+      </div>
+      <div id="route-grid" class="route-grid" aria-label="Grille de route"></div>
+      <button class="back-button" data-screen="main-screen">Menu principal</button>
+    </section>
     <section id="settings-screen" class="screen settings-screen" aria-labelledby="settings-title">
-
-
       <h2 id="settings-title">Paramètres</h2>
       <form class="settings-form">
         <label><span>Difficulté</span><select id="difficulty"><option>Normal</option><option>Facile</option></select></label>
@@ -116,54 +151,14 @@
         <label><span>Temps limite en Min</span><input id="time-limit" type="number" min="1" step="1" value="30" inputmode="numeric"></label>
         <label><span>Points pour ligne/Col/diag</span><input id="line-points" type="number" min="0" step="1" value="3" inputmode="numeric"></label>
         <label><span>Langue</span><select id="language"><option selected>FR</option><option>EN</option></select></label>
-
-        <label><span>Afficher Longueur</span><select id="show-length"><option selected>Non</option><option>Oui</option></select></label>
         <button id="reset-settings" type="button">Par défaut</button>
       </form>
       <p class="settings-note">La difficulté Facile ajoute la région. La longueur filtre les propositions disponibles. Le bonus s'ajoute pour chaque ligne, colonne ou diagonale complète d'une même couleur.</p>
       <button class="back-button" data-screen="main-screen">Menu principal</button>
     </section>
-    <section id="conquete-screen" class="screen game-screen" aria-labelledby="conquete-title">
-      <header class="game-header"><h2 id="conquete-title">Bingo Conquête</h2><output id="timer-conquete" class="timer">Chronomètre : 00:00:00</output></header>
-
-      <div class="toolbar" aria-label="Contrôles de partie">
-        <button id="fill-grid-conquete">Commencer</button>
-        <button id="start-timer">Démarrer chrono</button>
-        <button id="stop-timer">Arrêter chrono</button>
-        <div class="player-colors" aria-label="Couleur du joueur actif">
-          <button class="color-button" data-color="green" aria-label="Joueur Vert"></button>
-          <button class="color-button" data-color="red" aria-label="Joueur Rouge"></button>
-          <button class="color-button" data-color="blue" aria-label="Joueur Bleu"></button>
-          <button class="color-button" data-color="yellow" aria-label="Joueur Jaune"></button>
-        </div>
-      </div>
-      <div id="conquete-grid" class="conquete-grid" aria-label="Grille de Conquête"></div>
-      <button class="back-button" data-screen="main-screen">Menu principal</button>
-    </section>
-
-    <section id="route-screen" class="screen game-screen route-screen" aria-labelledby="route-title">
-      <header class="game-header">
-        <h2 id="route-title">Bingo Route</h2>
-      </header>
-      <div class="route-layout">
-        <div class="route-main">
-          <div class="route-board-wrap">
-            <svg id="route-arrows" class="route-arrows" aria-hidden="true"></svg>
-            <div id="route-board" class="route-board" aria-label="Plateau Bingo Route"></div>
-          </div>
-          <div class="route-footer">
-            <button id="fill-route" class="primary-action">Commencer</button>
-            <button class="back-button route-back-button" data-screen="main-screen">Menu principal</button>
-          </div>
-        </div>
-        <div id="route-controls" class="route-controls" aria-label="Contrôles des joueurs"></div>
-      </div>
-    </section>
-
     <section id="credits-screen" class="screen credits-screen" aria-labelledby="credits-title">
       <h2 id="credits-title">Crédits</h2><article id="credits-content" class="credits-content"></article><button class="back-button" data-screen="main-screen">Menu principal</button>
     </section>
-
   </main>
   <dialog id="message-dialog"><form method="dialog" class="dialog-card"><h3 id="dialog-title"></h3><div id="dialog-message"></div><button>OK</button></form></dialog>
   <dialog id="seed-dialog" class="seed-dialog">
@@ -191,7 +186,5 @@
     </div>
   </dialog>
   <script src="app.js"></script>
-  <script src="route.js"></script>
 </body>
 </html>
-
