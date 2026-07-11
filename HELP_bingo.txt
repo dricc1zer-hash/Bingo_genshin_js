@@ -1,5 +1,5 @@
 Ce mode de jeu est jouable de 1 à 4 joueurs. Si vous êtes seul, choisissez une couleur (On vous conseille le vert).
-Ce n'est pas synchronisé. Il faut donc une personne qui maintient le bingo, idéalement, quelqu'un qui ne joue pas et qui sert donc d'arbitre.
+Ce n'est pas synchronisé. Il faut donc une personne qui maintient le bingo . Idéalement, quelqu'un qui ne joue pas et qui sert donc d'arbitre.
 L'objectif de ce jeu est de marquer le plus de points en réalisant les propositions du carré. Chaque proposition vaut 1 point mais réaliser une ligne/colonne/diagonale entière vous donnera un bonus (3 points par défaut, modifiable dans les paramètres). Le jeu dure un maximum de 30 minutes (modifiable dans les paramètres). Mais les joueurs peuvent se mettre d'accord pour arrêter avant. Les cases ne sont pas exclusives (elles peuvent être réalisées par plusieurs joueurs).
 
 - Chaque joueur se connecte à Genshin Impact mais reste immobile
