@@ -162,10 +162,15 @@ function resetBingoScreen() {
   updateSeedButtons();
 }
 
-function buildEmptyGrid() {
+function makeBingoEmptyGrid() {
   state.gridTexts = makeMatrix(GRID_SIZE, "");
   state.gridLengths = makeMatrix(GRID_SIZE, 0);
   state.gridColors = makeMatrix(GRID_SIZE, null).map(row => row.map(() => new Set()));
+}
+
+function buildEmptyGrid() {
+  makeBingoEmptyGrid();
+  if (!els.grid) return;
   els.grid.innerHTML = "";
   for (let row = 0; row < GRID_SIZE; row++) {
     for (let col = 0; col < GRID_SIZE; col++) {
@@ -175,7 +180,16 @@ function buildEmptyGrid() {
       cell.dataset.row = String(row);
       cell.dataset.col = String(col);
       cell.setAttribute("aria-label", "Case vide");
-      cell.addEventListener("click", () => toggleCell(row, col));
+
+      const textEl = document.createElement("div");
+      textEl.className = "cell-text";
+      cell.append(textEl);
+
+      const starsEl = document.createElement("div");
+      starsEl.className = "cell-stars";
+      cell.append(starsEl);
+
+      cell.addEventListener("click", () => toggleBingoCell(row, col));
       els.grid.append(cell);
     }
   }
@@ -238,19 +252,8 @@ function fillGrid() {
     const col = index % GRID_SIZE;
     state.gridTexts[row][col] = entry[column];
     state.gridLengths[row][col] = entry.longueur;
-    drawCell(row, col);
+    drawBingoCell(row, col);
   });
-}
-
-function drawCell(row, col) {
-  const cell = cellElement(row, col);
-  const text = state.gridTexts[row][col];
-  const colors = orderedCellColors(state.gridColors[row][col]);
-  cell.textContent = text;
-  cell.classList.toggle("empty", !text);
-  cell.classList.toggle("filled", Boolean(text));
-  cell.style.background = colorBackground(colors);
-  cell.setAttribute("aria-label", text || "Case vide");
 }
 
 function cellElement(row, col) {
@@ -297,7 +300,7 @@ function colorBackground(colors) {
   );
 }
 
-function toggleCell(row, col) {
+function toggleBingoCell(row, col) {
   if (!state.timerRunning) {
     showMessage("Chronomètre", "Le chronomètre doit être démarré");
     return;
@@ -307,7 +310,36 @@ function toggleCell(row, col) {
   const colors = state.gridColors[row][col];
   if (colors.has(state.activeColor)) colors.delete(state.activeColor);
   else colors.add(state.activeColor);
-  drawCell(row, col);
+  drawBingoCell(row, col);
+}
+
+function drawBingoCell(row, col) {
+  const cell = cellElement(row, col);
+  const text = state.gridTexts[row][col];
+  const colors = orderedCellColors(state.gridColors[row][col]);
+
+  const textEl = cell.querySelector(".cell-text");
+  const starsEl = cell.querySelector(".cell-stars");
+
+  textEl.textContent = text;
+
+  const show = els.showLength && els.showLength.value === "Oui";
+  const len = state.gridLengths[row][col];
+
+  if (show && text) {
+    const safeCount = Number.isInteger(len) ? Math.max(0, len) : 0;
+    starsEl.style.display = "block";
+    starsEl.innerHTML = Array.from({ length: safeCount })
+      .map(() => '<span class="star-text" aria-hidden="true">★</span>')
+      .join("");
+  } else {
+    starsEl.style.display = "none";
+  }
+
+  cell.classList.toggle("empty", !text);
+  cell.classList.toggle("filled", Boolean(text));
+  cell.style.background = colorBackground(colors);
+  cell.setAttribute("aria-label", text || "Case vide");
 }
 
 function elapsedSeconds() {
