@@ -70,6 +70,34 @@
       outline: none;
       border-color: #3498db;
     }
+    
+    .help-button {
+      background-color: #3498db !important;
+      color: white !important;
+      border: none !important;
+      border-radius: 50% !important;
+      width: 28px !important;
+      height: 28px !important;
+      font-size: 16px !important;
+      font-weight: bold !important;
+      cursor: pointer !important;
+      margin-left: 0 !important;
+      padding: 0 !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      vertical-align: middle !important;
+      line-height: 1 !important;
+    }
+    
+    .help-button:hover {
+      background-color: #2980b9 !important;
+    }
+    
+    .help-dialog {
+      max-width: 800px !important;
+      width: 90% !important;
+    }
       .help-button {
       background-color: #3498db !important;
       color: white !important;
@@ -150,7 +178,7 @@
       <button class="back-button" data-screen="main-screen">Menu principal</button>
     </section>
     <section id="conquete-screen" class="screen game-screen" aria-labelledby="conquete-title">
-      <header class="game-header"><h2 id="conquete-title">Bingo Conquête</h2><output id="timer-conquete" class="timer">Chronomètre : 00:00:00</output></header>
+      <header class="game-header"><h2 id="conquete-title">Bingo Conquête <button id="help-conquete-btn" class="help-button" style="margin-left:0;padding:0;width:28px;height:28px;font-size:16px;line-height:1;vertical-align:middle;">?</button></h2><output id="timer-conquete" class="timer">Chronomètre : 00:00:00</output></header>
 
       <div class="toolbar" aria-label="Contrôles de partie">
         <button id="fill-grid-conquete">Commencer</button>
@@ -218,6 +246,8 @@
   </dialog>
   <script src="app.js"></script>
   <script src="route.js"></script>
+  <script src="bingo_help.js"></script>
+  <script src="conquete_help.js"></script>
   <script src="bingo_help.js"></script>`n  <script src="conquete_help.js"></script>`n</body>
 </html>
 
