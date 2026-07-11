@@ -102,8 +102,19 @@
     .seed-controls {
       display: flex !important;
       gap: 10px !important;
-      justify-content: center !important;
+      justify-content: space-between !important;
+      align-items: center !important;
       flex-wrap: wrap !important;
+    }
+    
+    .seed-controls-left {
+      display: flex !important;
+      gap: 10px !important;
+    }
+    
+    .seed-controls-right {
+      display: flex !important;
+      gap: 10px !important;
     }
   </style>
 </head>
@@ -135,9 +146,13 @@
       </div>
       <div id="bingo-grid" class="bingo-grid" aria-label="Grille de bingo"></div>
       <div class="seed-controls">
-        <button id="import-seed">Importer Graine</button>
-        <button id="export-seed">Exporter Graine</button>
-        <button class="back-button" data-screen="main-screen">Menu principal</button>
+        <div class="seed-controls-left">
+          <button id="import-seed">Importer Graine</button>
+          <button id="export-seed">Exporter Graine</button>
+        </div>
+        <div class="seed-controls-right">
+          <button class="back-button" data-screen="main-screen">Menu principal</button>
+        </div>
       </div>
     </section>
     <section id="settings-screen" class="screen settings-screen" aria-labelledby="settings-title">
