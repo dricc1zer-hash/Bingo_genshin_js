@@ -1,24 +1,20 @@
-Mode Bingo Conquête
-===================
-
 Ce mode est jouable de 1 à 4 joueurs. Si vous êtes seul, choisissez une couleur (On vous conseille le vert).
-
 Ce n'est pas synchronisé. Il faut donc une personne qui maintient le bingo, idéalement, quelqu'un qui ne joue pas et qui sert donc d'arbitre.
 
 Objectif :
-- Réaliser les quêtes listées dans les cases
+- Réaliser les quêtes listées dans les cases pour marquer des points
 - Chaque case représente une quête à accomplir dans Genshin Impact
-- Les cases ne sont pas exclusives (plusieurs joueurs peuvent valider la même case)
+- Les cases sont exclusives (Un seul joueurs peut valider une même case)
 
 Déroulement d'une partie :
 - Chaque joueur se connecte à Genshin Impact
 - Appuyez sur "Commencer" pour remplir les cases avec des quêtes aléatoires
 - Les joueurs analysent les cases et se font un plan
 - Quand tous sont prêts, appuyez sur "Démarrer Chrono"
-- Les joueurs partent accomplir les quêtes dans le jeu
+- Les joueurs partent accomplir les quêtes dans le jeu . 
+  ils oidvent partir du coin qui leur est assigné et progresser par case adjacente
 - Quand un joueur complète une quête, appuyez sur sa couleur puis sur la case
 - En cas d'erreur, re-cliquer sur la case enlèvera la couleur
-- Le jeu s'arrête quand le temps est écoulé ou en appuyant sur "Arrêter Chrono"
-- Les scores s'affichent alors
+- Le jeu s'arrête quand le temps est écoulé ou en appuyant sur "Arrêter Chrono" . Les scores s'affichent alors
 
 Note : Il est possible de faire des pauses avec "Arrêter Chrono" et "Démarrer Chrono".
