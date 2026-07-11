@@ -78,6 +78,7 @@ const els = {
   cancelSeedBtn: document.querySelector("#cancel-seed"),
   pasteSeedBtn: document.querySelector("#paste-seed"),
   copySeedBtn: document.querySelector("#copy-seed"),
+  helpBtn: document.querySelector("#help-btn"),
 };
 
 function makeMatrix(size, value) {
@@ -865,7 +866,7 @@ async function showHelp() {
     const helpText = await loadTextFile("HELP_bingo.txt");
     showMessage("Aide", helpText);
   } catch (error) {
-    showMessage("Erreur", "Impossible de charger le fichier d'aide.\n" + error.message);
+    showMessage("Erreur", "Impossible de charger le fichier d'aide." + error.message);
   }
 }async function bootstrap() {
   try {
@@ -1126,5 +1127,6 @@ async function loadLanguage() {
   }
 }
 
+els.helpBtn.addEventListener("click", showHelp);
 bootstrap();
 
